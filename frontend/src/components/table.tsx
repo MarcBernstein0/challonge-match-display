@@ -8,7 +8,7 @@ interface TableProps {
 export default function CustomizedTables({ matchData }: TableProps): JSX.Element {
     // console.log("call in CustomizedTables component", matchData);
     // const game1 = matchData[0];
-    // console.log(matchData);
+    console.log(matchData);
     return (
         <table>
             <thead>

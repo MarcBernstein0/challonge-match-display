@@ -6,7 +6,7 @@ table {
     border-spacing: 0px;
     /* min-width: -moz-available; */        /*  WebKit-based browsers will ignore this. */
     /* min-width: -webkit-fill-available; */ /* Mozilla-based browsers will ignore this. */
-    min-width: fill-available;
+    min-width: stretch;
 }
 
 table tbody tr td {
