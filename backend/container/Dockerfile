@@ -1,6 +1,6 @@
 FROM golang AS builder
 WORKDIR /app
-COPY . .
+COPY ./backend .
 RUN CGO_ENABLED=0 GOOS=linux go build -o match-display main.go
 
 FROM alpine:latest

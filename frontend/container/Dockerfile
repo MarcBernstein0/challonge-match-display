@@ -4,14 +4,14 @@ WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:${PATH} 
 
-COPY package.json ./
-COPY package-lock.json ./
-COPY tsconfig.json ./
+COPY ./frontend/package.json ./
+COPY ./frontend/package-lock.json ./
+COPY ./frontend/tsconfig.json ./
 
 RUN npm install
 
 
-COPY . ./
+COPY ./frontend ./
 
 RUN npm run build 
 
