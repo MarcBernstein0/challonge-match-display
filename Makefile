@@ -16,3 +16,13 @@ frontend_docker_run: # run frontend docker image
 	docker run --rm -p 3000:80 match-display-frontend
 
 frontend_build_and_run: frontend_docker_build frontend_docker_run # build and run frontend container
+
+start: # run docker-compose up headless
+	docker compose up -d 
+
+stop: # stock docker-compose
+	docker compose stop
+
+clean_compose: # remove docker composed files
+	docker compose rm
+
