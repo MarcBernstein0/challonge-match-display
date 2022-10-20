@@ -1,0 +1,10 @@
+# files
+.gitignore
+README.md
+
+
+# folders
+/.git
+/container
+/node_modules
+/build

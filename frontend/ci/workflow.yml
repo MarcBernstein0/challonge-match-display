@@ -1,0 +1,23 @@
+name: Match-Display-Frontend-Deploy
+
+# Run workflow on every push to main branch
+on: 
+  push: 
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_EMAIL: ${{ secrets.HEROKU_API_KEY }}
+# Workflow jobs
+jobs:
+
+  deploy:
+    name: Deploy to Heroku
+    runs-on: ubuntu-latest
+    steps:
+    
+    # Clone the repo
+    - name: Checkout
+      uses: actions/checkout@v2
