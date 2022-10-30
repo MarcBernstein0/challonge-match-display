@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const parsedDate = moment("2022-08-20", "YYYY-MM-DD");
+      const parsedDate = moment("2022-08-28", "YYYY-MM-DD");
       Match.getMatches(parsedDate)
         .then((data) => {
           setIsLoaded(true);
