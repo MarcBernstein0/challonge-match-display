@@ -32,7 +32,7 @@ jobs:
         APP_NAME: ${{ 'match-display' }}
         USER_NAME: ${{ secrets.CHALLONGE_USERNAME }}
         API_KEY: ${{ secrets.CHALLONGE_API_KEY }}
-        GIN_RELEASE: $${{ secrets.RELEASE }}
+        GIN_RELEASE: $${{ secrets.GIN_RELEASE }}
       run: |
         docker login --username=${HEROKU_EMAIL} --password=${HEROKU_API_KEY} registry.heroku.com
         docker build --file ${DOCKERFILE_NAME} \
