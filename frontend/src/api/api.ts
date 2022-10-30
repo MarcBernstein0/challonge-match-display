@@ -3,7 +3,7 @@ import { Moment } from "moment";
 import { Matches } from "../models/matches.interface";
 
 const instance = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: process.env.REACT_APP_MATCH_DISPLAY_URL,
     timeout: 15000,
     headers: {
         "Content-type": "application/json"

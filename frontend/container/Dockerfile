@@ -2,6 +2,8 @@ FROM node:latest AS builder
 
 WORKDIR /app
 
+ARG REACT_APP_MATCH_DISPLAY_URL
+
 ENV PATH /app/node_modules/.bin:${PATH} 
 
 COPY ./frontend/package.json ./
@@ -9,7 +11,6 @@ COPY ./frontend/package-lock.json ./
 COPY ./frontend/tsconfig.json ./
 
 RUN npm install
-
 
 COPY ./frontend ./
 

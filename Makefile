@@ -5,7 +5,7 @@ backend_docker_build: # build backend docker image
 	docker build --no-cache -t match-display -f ./backend/container/Dockerfile .
 
 backend_docker_run: # run backend docker image
-	docker run --rm --env-file .env -p 8080:8080 match-display
+	docker run --rm --env-file ./backend/.env -p 8080:8080 match-display
 
 backend_build_and_run: backend_docker_build backend_docker_run # build and run backend container
 

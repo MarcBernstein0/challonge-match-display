@@ -9,7 +9,7 @@ on:
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_EMAIL: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
 # Workflow jobs
 jobs:
 
@@ -21,3 +21,18 @@ jobs:
     # Clone the repo
     - name: Checkout
       uses: actions/checkout@v2
+
+    # PUSH the Docker image to Heroku Container Registry
+    - name: Docker Build, Deploy and Publish
+      env:
+        WORKDIR: "./frontend"
+        DOCKERFILE_NAME: "./container/Dockerfile"
+        DOCKER_OPTIONS: "--no-cache"
+        APP_NAME: ${{ 'match-desplay-frontend' }}
+      run: |
+        docker login --username=${HEROKU_EMAIL} --password=${HEROKU_API_KEY} registry.heroku.com
+        docker build --file ${DOCKERFILE_NAME} \
+          ${DOCKER_OPTIONS} \
+          --tag registry.heroku.com/${APP_NAME}/web .
+        docker push registry.heroku.com/${APP_NAME}/web
+        heroku container:release web -a ${APP_NAME}

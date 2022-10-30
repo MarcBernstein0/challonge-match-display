@@ -3,14 +3,14 @@ name: Match-Display-Backend-Deploy
 
 # Run workflow on every push to main branch
 on: 
-  push: 
-    branches: [ main ]
+  # push: 
+  #   branches: [ main ]
   pull_request:
     branches: [ main ]
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_EMAIL: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
 # Workflow jobs
 jobs:
 
@@ -26,8 +26,8 @@ jobs:
     # PUSH the Docker image to Heroku Container Reistry
     - name: Docker Build and Deploy Publish
       env:
-        WORKDIR: "."
-        DOCKERFILE_NAME: "./backend/container/Dockerfile"
+        WORKDIR: "./backend"
+        DOCKERFILE_NAME: "./container/Dockerfile"
         DOCKER_OPTIONS: "--no-cache"
         APP_NAME: ${{ 'match-display' }}
         USER_NAME: ${{ secrets.CHALLONGE_USERNAME }}
