@@ -1,8 +1,6 @@
-FROM node:latest AS builder
+FROM node:16.16.0-alpine3.16 AS builder
 
 WORKDIR /app
-
-ARG REACT_APP_MATCH_DISPLAY_URL
 
 ENV PATH /app/node_modules/.bin:${PATH} 
 
@@ -10,14 +8,14 @@ COPY ./frontend/package.json ./
 COPY ./frontend/package-lock.json ./
 COPY ./frontend/tsconfig.json ./
 
-RUN npm install
+RUN npm install 
 
 COPY ./frontend ./
 
-RUN npm run build 
+RUN npm run build
 
 # Pull from nginx to run frontend
-FROM nginx:latest
+FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 

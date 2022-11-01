@@ -4,6 +4,7 @@ import { Matches } from "../models/matches.interface";
 
 const instance = axios.create({
     baseURL: process.env.REACT_APP_MATCH_DISPLAY_URL,
+    // baseURL: "http://localhost:8080",
     timeout: 15000,
     headers: {
         "Content-type": "application/json"

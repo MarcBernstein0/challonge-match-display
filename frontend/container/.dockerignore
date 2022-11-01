@@ -1,10 +1,11 @@
 # files
 .gitignore
+.env*
 README.md
 
 
 # folders
-/.git
-/container
-/node_modules
-/build
+*/.git
+*/container
+*/node_modules
+*/build
