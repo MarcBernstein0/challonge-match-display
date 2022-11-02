@@ -26,7 +26,7 @@ jobs:
     - name: Docker Build, Deploy and Publish
       env:
         WORKDIR: "./frontend"
-        DOCKERFILE_NAME: "./container/Dockerfile"
+        DOCKERFILE_NAME: "./frontend/container/Dockerfile"
         DOCKER_OPTIONS: "--no-cache"
         APP_NAME: ${{ 'match-desplay-frontend' }}
         REACT_APP_MATCH_DISPLAY_URL: ${{ secrets.BACKEND_URL }}

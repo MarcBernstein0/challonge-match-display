@@ -27,7 +27,7 @@ jobs:
     - name: Docker Build and Deploy Publish
       env:
         WORKDIR: "./backend"
-        DOCKERFILE_NAME: "./container/Dockerfile"
+        DOCKERFILE_NAME: "./backend/container/Dockerfile"
         DOCKER_OPTIONS: "--no-cache"
         APP_NAME: ${{ 'match-display' }}
         USER_NAME: ${{ secrets.CHALLONGE_USERNAME }}
