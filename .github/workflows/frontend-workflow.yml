@@ -19,14 +19,38 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    # PUSH the Docker image to Heroku Container Registry
-    - name: Docker Build, Deploy and Publish
+    # Push to Heroku Container Registry
+    - name: Build, Push and Release a docker container to Heroku
       env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-        DOCKERFILE_NAME: "./frontend/container/Dockerfile"
         DOCKER_OPTIONS: "--no-cache"
         APP_NAME: ${{ 'match-desplay-frontend' }}
         REACT_APP_MATCH_DISPLAY_URL: ${{ secrets.BACKEND_URL }}
-      run: |
-        echo successfully run
+      uses: gonuit/heroku-docker-deploy@v1.3.3
+      with:
+        email: ${{ secrets.HEROKU_EMAIL }}
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heoku_app_name: "match-display-frontend"
+        dockerfile_directory: ./frontend/container
+        dockerfile_name: Dockerfile
+        docker_options: "--no-cache"
+        process_type: web
+
+
+
+    # PUSH the Docker image to Heroku Container Registry
+    # - name: Docker Build, Deploy and Publish
+    #   env:
+    #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    #     HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+    #     DOCKERFILE_NAME: "./frontend/container/Dockerfile"
+    #     DOCKER_OPTIONS: "--no-cache"
+    #     APP_NAME: ${{ 'match-desplay-frontend' }}
+    #     REACT_APP_MATCH_DISPLAY_URL: ${{ secrets.BACKEND_URL }}
+    #   run: |
+    #     docker login --username=${HEROKU_EMAIL} --password=${HEROKU_API_KEY} registry.heroku.com
+    #     docker build --file ${DOCKERFILE_NAME} \
+    #       ${DOCKER_OPTIONS} \
+    #       --tag registry.heroku.com/${APP_NAME}/web .
+    #     docker push registry.heroku.com/${APP_NAME}/web
+    #     heroku config:set REACT_APP_MATCH_DISPLAY_URL=${REACT_APP_MATCH_DISPLAY_URL} -a ${APP_NAME}
+    #     heroku container:release web -a ${APP_NAME}
