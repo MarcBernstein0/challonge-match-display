@@ -15,3 +15,5 @@ services:
       dockerfile: ./frontend/container/Dockerfile
     ports:
       - "3000:80"
+    env_file:
+      - ./frontend/.env

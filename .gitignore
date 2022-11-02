@@ -7,7 +7,6 @@
 /frontend/.pnp
 /frontend.pnp.js
 /frontend/.vscode
-/frontend-new
 
 # testing 
 /frontend/coverage

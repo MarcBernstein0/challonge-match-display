@@ -2,15 +2,15 @@ FROM node:16.16.0-alpine3.16 AS builder
 
 WORKDIR /app
 
+# Set env variable
 ENV PATH /app/node_modules/.bin:${PATH} 
 
-COPY ./frontend/package.json ./
-COPY ./frontend/package-lock.json ./
-COPY ./frontend/tsconfig.json ./
-
-RUN npm install 
-
 COPY ./frontend ./
+
+RUN chmod +x ./container/scripts/set-env.sh \
+    ./container/scripts/set-env.sh && \
+    npm install 
+
 
 RUN npm run build
 
