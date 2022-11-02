@@ -29,7 +29,7 @@ jobs:
       with:
         email: ${{ secrets.HEROKU_EMAIL }}
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-        heoku_app_name: "match-display-frontend"
+        heroku_app_name: "match-display-frontend"
         dockerfile_directory: ./frontend/container
         dockerfile_name: Dockerfile
         docker_options: "--no-cache"
