@@ -2,8 +2,8 @@ name: Match-Display-Frontend-Deploy
 
 # Run workflow on every push to main branch
 on: 
-  # push: 
-  #   branches: [ main ]
+  push: 
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -29,6 +29,7 @@ jobs:
         DOCKERFILE_NAME: "./container/Dockerfile"
         DOCKER_OPTIONS: "--no-cache"
         APP_NAME: ${{ 'match-desplay-frontend' }}
+        REACT_APP_MATCH_DISPLAY_URL: ${{ secrets.BACKEND_URL }}
       run: |
         docker login --username=${HEROKU_EMAIL} --password=${HEROKU_API_KEY} registry.heroku.com
         docker build --file ${DOCKERFILE_NAME} \
