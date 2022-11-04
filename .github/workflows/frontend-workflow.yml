@@ -32,7 +32,6 @@ jobs:
       env:
         DOCKERFILE_NAME: "./frontend/container/Dockerfile"
       run: |
-        docker login --username=${HEROKU_ENAME} --password=${HEROKU_API_KEY} registry.heroku.com
         docker build --file ${DOCKERFILE_NAME} --no-cache --tag registry.heroku.com/${APP_NAME}/web .
         heroku container:push -a ${APP_NAME} registry.heroku.com/${APP_NAME}/web
     
