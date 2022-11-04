@@ -9,6 +9,7 @@ on:
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  APP_NAME: "match-display-frontend"
 
 # Workflow jobs
 jobs:
@@ -28,8 +29,8 @@ jobs:
       run: heroku container:login
 
     - name: Build and push
-      run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+      run: heroku container:push -a ${ APP_NAME } web
     
     - name: Release
-      run: heroku container: release -a ${{ secrets.HEROKU_APP_NAME }} web
+      run: heroku container: release -a ${ APP_NAME } web
 
