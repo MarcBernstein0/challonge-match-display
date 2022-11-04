@@ -28,6 +28,9 @@ jobs:
     - name: Login to Heroku Container registry
       run: heroku container:login
 
+    - name: Configure Env Variables
+      run: heroku config:set REACT_APP_MATCH_DISPLAY_URL=${{ secrets.BACKEND_URL }}
+
     - name: Build and push
       env:
         DOCKERFILE_NAME: "./frontend/container/Dockerfile"
@@ -36,6 +39,6 @@ jobs:
         docker build --file ${DOCKERFILE_NAME} --no-cache --tag registry.heroku.com/${APP_NAME}/web .
         docker push registry.heroku.com/${APP_NAME}/web
     
-    # - name: Release
-    #   run: heroku container:release -a ${ APP_NAME } web
+    - name: Release
+      run: heroku container:release -a ${APP_NAME} registry.heroku.com/${APP_NAME}/web
 
