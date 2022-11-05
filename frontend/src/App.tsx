@@ -14,6 +14,7 @@ function App() {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
+    console.log(process.env);
     const interval = setInterval(() => {
       const parsedDate = moment("2022-08-20", "YYYY-MM-DD");
       Match.getMatches(parsedDate)
