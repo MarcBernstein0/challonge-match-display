@@ -25,5 +25,7 @@ RUN rm -rf ./*
 # Copies static resources from builder stage
 COPY --from=builder /app/build .
 
+COPY --from=builder /app/container/templates/default.conf.template /etc/nginx/conf.d/default.conf.template
+
 # Container run nginx with global directives and daemon off
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+CMD sh -c "envsubst \"`env | awk -F = '{printf \" \\\\$%s\", $1}'`\" < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
