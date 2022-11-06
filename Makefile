@@ -13,7 +13,7 @@ frontend_docker_build: # build frontend docker image
 	docker build --no-cache -t match-display-frontend -f ./frontend/container/Dockerfile .
 
 frontend_docker_run: # run frontend docker image
-	docker run --rm -p 3000:80 match-display-frontend --env-file ./frontend/.env -e PORT=80
+	docker run --rm --env-file ./frontend/.env -e PORT=80 -p 3000:80 match-display-frontend 
 
 frontend_build_and_run: frontend_docker_build frontend_docker_run # build and run frontend container
 
