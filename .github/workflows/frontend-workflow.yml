@@ -2,8 +2,6 @@ name: Match-Display-Frontend-Deploy
 
 # Run workflow on every push to main branch
 on: 
-  push: 
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
