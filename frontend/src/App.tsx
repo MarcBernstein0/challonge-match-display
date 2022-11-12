@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     console.log(process.env);
-    const parsedDate = moment("2022-08-20", "YYYY-MM-DD");
+    const parsedDate = moment("2022-11-15", "YYYY-MM-DD");
     Match.getMatches(parsedDate)
       .then((data) => {
         setIsLoaded(true);
