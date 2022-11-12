@@ -3,8 +3,8 @@ import { Moment } from "moment";
 import { Matches } from "../models/matches.interface";
 
 const instance = axios.create({
-    // baseURL: process.env.REACT_APP_MATCH_DISPLAY_URL,
-    baseURL: "https://match-display.herokuapp.com",
+    baseURL: process.env.REACT_APP_MATCH_DISPLAY_URL,
+    // baseURL: "https://match-display.herokuapp.com",
     timeout: 15000,
     headers: {
         "Content-type": "application/json"
