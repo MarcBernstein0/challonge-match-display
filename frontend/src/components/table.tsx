@@ -10,21 +10,21 @@ export default function CustomizedTables({ matchData }: TableProps): JSX.Element
         <table>
             <thead>
                 <tr>
-                    <th colSpan={2}>{matchData.game_name}</th>
+                    <th key={matchData.tournament_id} colSpan={2}>{matchData.game_name}</th>
                 </tr>
             </thead>
             <thead>
                 <tr>
-                    <th>Match</th>
-                    <th>Round</th>
+                    <th key={"match"}>Match</th>
+                    <th key={"round"}>Round</th>
                 </tr>
                 
             </thead>
             <tbody>
                 {matchData.match_list.map(match => (
                     <tr>
-                        <td>{`${match.player1_name} vs ${match.player2_name}`}</td>
-                        <td>{match.round <= -1 ? `losers ${Math.abs(match.round)}`: `winners ${match.round}`}</td>
+                        <td key={Math.random()}>{`${match.player1_name} vs ${match.player2_name}`}</td>
+                        <td key={Math.random()}>{match.round <= -1 ? `losers ${Math.abs(match.round)}`: `winners ${match.round}`}</td>
                     </tr>
                 ))}
             </tbody>
