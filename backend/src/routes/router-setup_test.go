@@ -242,15 +242,12 @@ func TestGetMatchesRoute(t *testing.T) {
 			},
 		},
 		{
-			name:       "response not ok",
+			name:       "response ok but emtpy",
 			date:       "2022-07-20",
-			statusCode: http.StatusInternalServerError,
-			wantData:   nil,
-			expectErr:  true,
-			wantErr: models.ErrorResponse{
-				Message:      "failed to get tournament data",
-				ErrorMessage: fmt.Errorf("%w. %s", mainlogic.ErrNoData, http.StatusText(http.StatusNotFound)).Error(),
-			},
+			statusCode: http.StatusOK,
+			wantData:   []models.TournamentMatches{},
+			expectErr:  false,
+			wantErr:    models.ErrorResponse{},
 		},
 		{
 			name:       "single tournament",

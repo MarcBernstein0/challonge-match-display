@@ -42,6 +42,9 @@ func MatchesGET(fetchData mainlogic.FetchData) gin.HandlerFunc {
 			}
 			c.JSON(http.StatusInternalServerError, errResponse)
 			return
+		} else if len(tournaments) == 0 {
+			// no errors but empty tournaments
+			c.JSON(http.StatusOK, []models.TournamentMatches{})
 		}
 		// fmt.Printf("tournaments %+v\n", tournaments)
 		// call particiapnts

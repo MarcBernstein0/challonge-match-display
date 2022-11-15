@@ -98,7 +98,7 @@ func (c *customClient) FetchTournaments(date string) ([]models.Tournament, error
 		return nil, fmt.Errorf("%w. %s", ErrServerProblem, http.StatusText(http.StatusInternalServerError))
 	}
 	if len(tournaments) == 0 {
-		return nil, fmt.Errorf("%w. %s", ErrNoData, http.StatusText(http.StatusNotFound))
+		return []models.Tournament{}, nil
 	}
 	// fmt.Printf("%+v, %v\n", tournaments, len(tournaments))
 	var tournamentList []models.Tournament
