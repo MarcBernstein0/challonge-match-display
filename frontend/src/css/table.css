@@ -21,7 +21,7 @@ table tbody tr td {
 
 table tbody tr td:last-child {
     border-right: 0px;
-    font-size: x-large;
+    font-size: medium;
 }
 
 th {

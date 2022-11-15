@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"sort"
 	"sync"
@@ -306,10 +307,12 @@ func (c *customClient) FetchMatches(tournamentParticipants []models.TournamentPa
 		sort.SliceStable(tournamentMatchResult.tournamentMatches.MatchList, func(i, j int) bool {
 			matchList := tournamentMatchResult.tournamentMatches.MatchList
 			// sort the same name if round matches
-			if matchList[i].Round == matchList[j].Round {
+			match1 := math.Abs(float64(matchList[i].Round))
+			match2 := math.Abs(float64(matchList[j].Round))
+			if match1 == match2 {
 				return matchList[i].Player1Name <= matchList[j].Player1Name
 			}
-			return matchList[i].Round < matchList[j].Round
+			return match1 < match2
 		})
 		tournamentMatches = append(tournamentMatches, *tournamentMatchResult.tournamentMatches)
 	}
