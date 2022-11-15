@@ -15,22 +15,24 @@ function App() {
 
   useEffect(() => {
     console.log(process.env);
-    const parsedDate = moment("2022-11-11", "YYYY-MM-DD");
+    const parsedDate = moment();
     Match.getMatches(parsedDate)
       .then((data) => {
+        console.log("data result", data)
         setIsLoaded(true);
         setMatches(data);
       })
       .catch((err) => {
+        console.log("error occured");
         setIsLoaded(true);
         setIsError(true);
-        setError(err);
+        setError(err.message);
       });
 
     const interval = setInterval(() => {
       Match.getMatches(parsedDate)
         .then((data) => {
-          // console.log(data)
+          console.log(data)
           setIsLoaded(true);
           setMatches(data);
         })
@@ -39,9 +41,10 @@ function App() {
           setIsError(true);
           setError(err);
         });
-    }, 5000);
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
+
 
   return (
     <span>
@@ -49,11 +52,29 @@ function App() {
         <span>
           {!isError ? (
             <Grid container spacing={3}>
-              {matchResult.map((game) => (
-                <Grid item xs={4}>
-                  <CustomizedTables matchData={game} />
+              {matchResult.length === 0 ?
+                <Grid item xs={12}>
+                  <h1 style={{
+                    textAlign: "center"
+                  }}>
+                    No tournaments
+                  </h1>
                 </Grid>
-              ))}
+                : matchResult.map((game) => (
+                  <Grid item xs={
+                    matchResult.length <= 2 ? (12/matchResult.length) : 4
+                  }>
+                    <CustomizedTables matchData={game} />
+                  </Grid>
+                ))}
+                <Grid item xs={12}>
+                  <h1 style={{
+                    textAlign: "center"
+                  }}>
+                    IF YOU SEE YOUR MATCH DISPLAYED UP HERE YOU CAN GO AHEAD AND PLAY THE MATCH. <br/>
+                    PLEASE MAKE SURE YOU REPORT YOUR RESULTS TO YOUR TOURNAMENTS TO.
+                  </h1>
+                </Grid>
             </Grid>
           ) : <div>{error}</div>}
         </span>
@@ -68,6 +89,7 @@ function App() {
         </Grid>}
     </span>
   );
+
 }
 
 export default App;

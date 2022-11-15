@@ -233,8 +233,8 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 			fetchData: func(baseURL, username, apiKey string, client *http.Client) *customClient {
 				return New(baseURL, username, apiKey, client)
 			}(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
-			wantData: nil,
-			wantErr:  fmt.Errorf("%w. %s", ErrNoData, http.StatusText(http.StatusNotFound)),
+			wantData: []models.Tournament{},
+			wantErr:  nil,
 		},
 	}
 

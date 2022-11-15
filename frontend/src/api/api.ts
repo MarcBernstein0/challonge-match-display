@@ -17,7 +17,8 @@ const requests = {
     get: (url: string, params: { date: string }) => instance.get(url, {params})
                                                                 .then(responseBody)
                                                                 .catch((err: Error | AxiosError) => {
-                                                                    return err.message
+                                                                    console.log("error in api call");
+                                                                    throw err
                                                                 }),
 };
 

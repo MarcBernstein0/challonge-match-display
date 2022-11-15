@@ -23,6 +23,7 @@ type Date struct {
 func MatchesGET(fetchData mainlogic.FetchData) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		var date Date
+		matches := make([]models.TournamentMatches, 0)
 		if err := c.BindQuery(&date); err != nil {
 			errResponse := models.ErrorResponse{
 				Message:      "did not fill out required 'date' query field",
@@ -42,6 +43,10 @@ func MatchesGET(fetchData mainlogic.FetchData) gin.HandlerFunc {
 			}
 			c.JSON(http.StatusInternalServerError, errResponse)
 			return
+		} else if len(tournaments) == 0 {
+			// no errors but empty tournaments
+			c.JSON(http.StatusOK, matches)
+			return
 		}
 		// fmt.Printf("tournaments %+v\n", tournaments)
 		// call particiapnts
@@ -56,7 +61,7 @@ func MatchesGET(fetchData mainlogic.FetchData) gin.HandlerFunc {
 		}
 		// fmt.Printf("list of participants %+v\n", participants)
 		// call matches
-		matches, err := fetchData.FetchMatches(participants)
+		matches, err = fetchData.FetchMatches(participants)
 		if err != nil {
 			errResponse := models.ErrorResponse{
 				Message:      "failed to get match data",
