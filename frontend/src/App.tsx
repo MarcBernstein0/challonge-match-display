@@ -72,7 +72,7 @@ function App() {
                     textAlign: "center"
                   }}>
                     IF YOU SEE YOUR MATCH DISPLAYED UP HERE YOU CAN GO AHEAD AND PLAY THE MATCH. <br/>
-                    PLEASE MAKE SURE YOU REPORT YOUR RESULTS TO YOUR TOURNAMENTS TO.
+                    PLEASE MAKE SURE YOU REPORT YOUR RESULTS TO YOUR TOURNAMENT'S TO.
                   </h1>
                 </Grid>
             </Grid>
