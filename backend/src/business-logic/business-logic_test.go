@@ -197,21 +197,24 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 	tt := []struct {
 		name      string
 		date      string
-		fetchData FetchData
+		fetchData *Tournaments
+		client    *customClient
 		wantData  *Tournaments
 		wantErr   error
 	}{
 		{
 			name:      "response not ok",
 			date:      time.Now().Local().Format("2006-01-02"),
-			fetchData: New(server.URL, "ashdfhsf", "asdfhdsfh", http.DefaultClient),
-			wantData:  nil,
+			fetchData: NewTournament(),
+			client:    NewClient(server.URL, "ashdfhsf", "asdfhdsfh", http.DefaultClient),
+			wantData:  NewTournament(),
 			wantErr:   fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(http.StatusUnauthorized)),
 		},
 		{
 			name:      "data found",
 			date:      time.Now().Local().Format("2006-01-02"),
-			fetchData: New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			fetchData: NewTournament(),
+			client:    NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
 			wantData: &Tournaments{
 				TournamentInfo: map[int]struct {
 					Game         string
@@ -234,13 +237,13 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 	for _, testCase := range tt {
 		t.Run(testCase.name, func(t *testing.T) {
 
-			gotData, gotErr := testCase.fetchData.FetchTournaments(testCase.date)
+			gotErr := testCase.fetchData.FetchTournaments(testCase.date, testCase.client)
 			if testCase.wantErr != nil {
-				assert.Nil(t, gotData)
+				assert.Equal(t, testCase.wantData.TournamentInfo, testCase.fetchData.TournamentInfo)
 				assert.EqualError(t, gotErr, testCase.wantErr.Error())
 			} else {
-				if assert.NotNil(t, gotData.TournamentInfo) {
-					assert.Equal(t, testCase.wantData.TournamentInfo, gotData.TournamentInfo)
+				if assert.NotNil(t, testCase.fetchData.TournamentInfo) {
+					assert.Equal(t, testCase.wantData.TournamentInfo, testCase.fetchData.TournamentInfo)
 				}
 				assert.NoError(t, gotErr)
 			}

@@ -1,6 +1,7 @@
 package businesslogic
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 var (
 	ErrCouldNotCreateReq error = errors.New("could not create request")
 	ErrCouldNotCreateRes error = errors.New("could not create response")
+	ErrCouldNotUnMarshal error = errors.New("could not unmarshal challonge data")
 	ErrResponseNotOK     error = errors.New("response not ok")
 	ErrServerProblem     error = errors.New("server error")
 	ErrNoData            error = errors.New("no data found")
@@ -31,11 +33,11 @@ type (
 	}
 
 	FetchData interface {
-		// FetchTournaments fetch all tournaments and tournament participants created after a specific date
+		// FetchTournaments fetch all tournaments created after a specific date
 		// GET https://api.challonge.com/v1/tournaments.{json|xml}
-		FetchTournaments(date string) (*Tournaments, error)
+		FetchTournaments(date string, client *customClient) error
 
-		FetchMatches(tournaments *Tournaments) ([]models.TournamentMatches, error)
+		FetchMatches(client *customClient) ([]models.TournamentMatches, error)
 	}
 
 	customClient struct {
@@ -48,7 +50,18 @@ type (
 	}
 )
 
-func New(baseURL, username, apiKey string, client *http.Client) *customClient {
+func NewTournament() *Tournaments {
+	t := Tournaments{
+		TournamentInfo: make(map[int]struct {
+			Game         string
+			Participants map[int]string
+		}),
+	}
+
+	return &t
+}
+
+func NewClient(baseURL, username, apiKey string, client *http.Client) *customClient {
 	return &customClient{
 		baseURL: baseURL,
 		client:  client,
@@ -62,30 +75,57 @@ func New(baseURL, username, apiKey string, client *http.Client) *customClient {
 	}
 }
 
-func (c *customClient) FetchTournaments(date string) (*Tournaments, error) {
-	req, err := http.NewRequest(http.MethodGet, c.baseURL+"/tournaments.json", nil)
+func (t *Tournaments) FetchTournaments(date string, client *customClient) error {
+	req, err := http.NewRequest(http.MethodGet, client.baseURL+"/tournaments.json", nil)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %s", ErrCouldNotCreateReq, http.StatusText(http.StatusInternalServerError))
+		return fmt.Errorf("%w. %s", ErrCouldNotCreateReq, http.StatusText(http.StatusInternalServerError))
 	}
 	q := req.URL.Query()
-	q.Add("api_key", c.config.apiKey)
+	q.Add("api_key", client.config.apiKey)
 	q.Add("state", "in_progress")
 	q.Add("created_after", date)
 	req.URL.RawQuery = q.Encode()
 
-	res, err := c.client.Do(req)
+	res, err := client.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %s", ErrCouldNotCreateRes, http.StatusText(http.StatusInternalServerError))
+		return fmt.Errorf("%w. %s", ErrCouldNotCreateRes, http.StatusText(http.StatusInternalServerError))
 	}
 
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(res.StatusCode))
+		return fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(res.StatusCode))
 	}
 
-	return &Tournaments{}, nil
+	var challongeTournaments models.Tournaments
+	err = json.NewDecoder(res.Body).Decode(&challongeTournaments)
+	if err != nil {
+		return fmt.Errorf("%w, %s", ErrCouldNotUnMarshal, http.StatusText(http.StatusInternalServerError))
+	}
+
+	if len(challongeTournaments) == 0 {
+		return nil
+	}
+
+	fmt.Printf("%+v, %v\n", challongeTournaments, len(challongeTournaments))
+	// var tournaments Tournaments
+
+	for _, tournament := range challongeTournaments {
+		if _, ok := t.TournamentInfo[tournament.Tournament.ID]; !ok {
+			t.TournamentInfo[tournament.Tournament.ID] = struct {
+				Game         string
+				Participants map[int]string
+			}{
+				Game: tournament.Tournament.GameName,
+			}
+		}
+
+	}
+
+	fmt.Printf("%+v, %v\n", t, len(t.TournamentInfo))
+
+	return nil
 }
 
-func (c *customClient) FetchMatches(tournaments *Tournaments) ([]models.TournamentMatches, error) {
+func (t *Tournaments) FetchMatches(client *customClient) ([]models.TournamentMatches, error) {
 	return nil, nil
 }
