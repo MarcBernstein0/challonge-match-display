@@ -1,12 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"net/http"
 	"os"
-
-	mainlogic "github.com/MarcBernstein0/match-display/src/main-logic"
-	"github.com/MarcBernstein0/match-display/src/routes"
 )
 
 const BASE_URL = "https://api.challonge.com/v1"
@@ -27,8 +24,9 @@ func main() {
 		log.Fatalf("api_key not provided in env")
 	}
 
-	customClient := mainlogic.New(BASE_URL, username, apiKey, http.DefaultClient)
-	r := routes.RouteSetup(customClient)
+	fmt.Println(port, username, apiKey)
+	// customClient := mainlogic.New(BASE_URL, username, apiKey, http.DefaultClient)
+	// r := routes.RouteSetup(customClient)
 
-	r.Run(":" + port)
+	// r.Run(":" + port)
 }
