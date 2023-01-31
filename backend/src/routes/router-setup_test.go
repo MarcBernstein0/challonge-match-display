@@ -10,14 +10,14 @@ import (
 	"strings"
 	"testing"
 
-	mainlogic "github.com/MarcBernstein0/match-display/src/main-logic"
+	businesslogic "github.com/MarcBernstein0/match-display/src/business-logic"
 	"github.com/MarcBernstein0/match-display/src/models"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
 	server    *httptest.Server
-	mockFetch mainlogic.FetchData
+	mockFetch businesslogic.FetchData
 )
 
 const (
@@ -206,7 +206,7 @@ func TestMain(m *testing.M) {
 		}
 	}))
 
-	mockFetch = mainlogic.New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient)
+	mockFetch = businesslogic.New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient)
 	m.Run()
 }
 
