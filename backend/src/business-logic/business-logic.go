@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/MarcBernstein0/match-display/src/models"
@@ -188,5 +190,57 @@ func (t *Tournaments) FetchTournaments(date string, client *customClient) error 
 }
 
 func (t *Tournaments) FetchMatches(client *customClient) ([]models.TournamentMatches, error) {
-	return nil, nil
+	if len(t.TournamentInfo) == 0 {
+		return nil, fmt.Errorf("%w, %s", ErrServerProblem, http.StatusText(http.StatusInternalServerError))
+	}
+
+	params := map[string]string{
+		"api_key": client.config.apiKey,
+		"state":   "open",
+	}
+
+	result := make([]models.TournamentMatches, 0)
+	for k, v := range t.TournamentInfo {
+		path := fmt.Sprintf("/tournaments/%v/matches.json", k)
+		var matches models.Matches
+		err := client.fetchData(params, path, &matches)
+		if err != nil {
+			return result, err
+		}
+
+		if len(matches) == 0 {
+			return result, nil
+		}
+
+		tournamentMatches := models.TournamentMatches{
+			GameName:     v.Game,
+			TournamentID: k,
+			MatchList:    make([]models.Match, 0),
+		}
+
+		for _, m := range matches {
+			m.Match.Player1Name = v.Participants[m.Match.Player1ID]
+			m.Match.Player2Name = v.Participants[m.Match.Player2ID]
+			tournamentMatches.MatchList = append(tournamentMatches.MatchList, m.Match)
+			// fmt.Printf("%+v\n", m.Match)
+		}
+
+		sort.SliceStable(tournamentMatches.MatchList, func(i, j int) bool {
+			matchList := tournamentMatches.MatchList
+
+			match1 := math.Abs(float64(matchList[i].Round))
+			match2 := math.Abs(float64(matchList[j].Round))
+			if match1 == match2 {
+				return matchList[i].Player1Name <= matchList[j].Player1Name
+			}
+			return match1 < match2
+		})
+
+		// fmt.Printf("%+v\n", tournamentMatches)
+		result = append(result, tournamentMatches)
+	}
+
+	// fmt.Println(result)
+
+	return result, nil
 }

@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/MarcBernstein0/match-display/src/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -262,6 +263,128 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 				if assert.NotNil(t, testCase.fetchData.TournamentInfo) {
 					assert.Equal(t, testCase.wantData.TournamentInfo, testCase.fetchData.TournamentInfo)
 				}
+				assert.NoError(t, gotErr)
+			}
+		})
+	}
+}
+
+func TestCustomClient_FetchMatches(t *testing.T) {
+	tt := []struct {
+		name      string
+		date      string
+		fetchData *Tournaments
+		client    *customClient
+		wantData  []models.TournamentMatches
+		wantErr   error
+	}{
+		{
+			name: "response not ok",
+			fetchData: &Tournaments{
+				TournamentInfo: map[int]struct {
+					Game         string
+					Participants map[int]string
+				}{
+					10879090: {
+						Game: "Guilty Gear -Strive-",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+				},
+			},
+			client:   NewClient(server.URL, "asdfhjk", "asdfghj", http.DefaultClient),
+			wantData: nil,
+			wantErr:  fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(http.StatusUnauthorized)),
+		},
+		{
+			name: "found matches",
+			fetchData: &Tournaments{
+				TournamentInfo: map[int]struct {
+					Game         string
+					Participants map[int]string
+				}{
+					10879090: {
+						Game: "Guilty Gear -Strive-",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+					10879091: {
+						Game: "DNF Duel",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+				},
+			},
+			client: NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			wantData: []models.TournamentMatches{
+				{
+					GameName:     "Guilty Gear -Strive-",
+					TournamentID: 10879090,
+					MatchList: []models.Match{
+						{
+							ID:          267800918,
+							Player1ID:   166014671,
+							Player1Name: "test",
+							Player2ID:   166014674,
+							Player2Name: "test4",
+							Round:       1,
+						},
+						{
+							ID:          267800919,
+							Player1ID:   166014672,
+							Player1Name: "test2",
+							Player2ID:   166014673,
+							Player2Name: "test3",
+							Round:       1,
+						},
+					},
+				},
+				{
+					GameName:     "DNF Duel",
+					TournamentID: 10879091,
+					MatchList: []models.Match{
+						{
+							ID:          267800918,
+							Player1ID:   166014671,
+							Player1Name: "test",
+							Player2ID:   166014674,
+							Player2Name: "test4",
+							Round:       1,
+						},
+						{
+							ID:          267800919,
+							Player1ID:   166014672,
+							Player1Name: "test2",
+							Player2ID:   166014673,
+							Player2Name: "test3",
+							Round:       1,
+						},
+					},
+				},
+			},
+			wantErr: nil,
+		},
+	}
+
+	for _, testCase := range tt {
+		t.Run(testCase.name, func(t *testing.T) {
+			gotData, gotErr := testCase.fetchData.FetchMatches(testCase.client)
+			assert.ElementsMatch(t, testCase.wantData, gotData)
+			if testCase.wantErr != nil {
+				assert.EqualError(t, gotErr, testCase.wantErr.Error())
+			} else {
 				assert.NoError(t, gotErr)
 			}
 		})
