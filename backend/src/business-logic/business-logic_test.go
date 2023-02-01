@@ -229,8 +229,25 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 							166014674: "test4",
 						},
 					},
+					10879091: {
+						Game: "DNF Duel",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
 				},
 			},
+		},
+		{
+			name:      "no data found but response ok",
+			date:      "2022-07-16",
+			fetchData: NewTournament(),
+			client:    NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			wantData:  NewTournament(),
+			wantErr:   nil,
 		},
 	}
 

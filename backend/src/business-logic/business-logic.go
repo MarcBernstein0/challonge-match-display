@@ -75,18 +75,20 @@ func NewClient(baseURL, username, apiKey string, client *http.Client) *customCli
 	}
 }
 
-func (t *Tournaments) FetchTournaments(date string, client *customClient) error {
-	req, err := http.NewRequest(http.MethodGet, client.baseURL+"/tournaments.json", nil)
+func (c *customClient) fetchData(params map[string]string, path string, result any) error {
+	req, err := http.NewRequest(http.MethodGet, c.baseURL+path, nil)
 	if err != nil {
 		return fmt.Errorf("%w. %s", ErrCouldNotCreateReq, http.StatusText(http.StatusInternalServerError))
 	}
+
 	q := req.URL.Query()
-	q.Add("api_key", client.config.apiKey)
-	q.Add("state", "in_progress")
-	q.Add("created_after", date)
+	for k, v := range params {
+		q.Add(k, v)
+	}
+
 	req.URL.RawQuery = q.Encode()
 
-	res, err := client.client.Do(req)
+	res, err := c.client.Do(req)
 	if err != nil {
 		return fmt.Errorf("%w. %s", ErrCouldNotCreateRes, http.StatusText(http.StatusInternalServerError))
 	}
@@ -96,17 +98,36 @@ func (t *Tournaments) FetchTournaments(date string, client *customClient) error 
 		return fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(res.StatusCode))
 	}
 
-	var challongeTournaments models.Tournaments
-	err = json.NewDecoder(res.Body).Decode(&challongeTournaments)
+	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
 		return fmt.Errorf("%w, %s", ErrCouldNotUnMarshal, http.StatusText(http.StatusInternalServerError))
 	}
+
+	return nil
+}
+
+func (t *Tournaments) fetchTournaments(date string, client *customClient) error {
+
+	// get tournament info
+	var challongeTournaments models.Tournaments
+
+	params := map[string]string{
+		"api_key":       client.config.apiKey,
+		"state":         "in_progress",
+		"created_after": date,
+	}
+
+	err := client.fetchData(params, "/tournaments.json", &challongeTournaments)
+	if err != nil {
+		return err
+	}
+
+	// fmt.Printf("%+v, %v\n", challongeTournaments, len(challongeTournaments))
 
 	if len(challongeTournaments) == 0 {
 		return nil
 	}
 
-	fmt.Printf("%+v, %v\n", challongeTournaments, len(challongeTournaments))
 	// var tournaments Tournaments
 
 	for _, tournament := range challongeTournaments {
@@ -121,7 +142,38 @@ func (t *Tournaments) FetchTournaments(date string, client *customClient) error 
 
 	}
 
-	fmt.Printf("%+v, %v\n", t, len(t.TournamentInfo))
+	params = map[string]string{
+		"api_key": client.config.apiKey,
+	}
+
+	for k, v := range t.TournamentInfo {
+		if len(v.Participants) == 0 {
+			v.Participants = make(map[int]string)
+			path := fmt.Sprintf("/tournaments/%v/participants.json", k)
+			var participants models.Participants
+			err = client.fetchData(params, path, &participants)
+			if err != nil {
+				return err
+			}
+			if len(participants) == 0 {
+				return nil
+			}
+			for _, elem := range participants {
+				// fmt.Println(elem.Participant.ID, elem.Participant.Name)
+				v.Participants[elem.Participant.ID] = elem.Participant.Name
+			}
+			t.TournamentInfo[k] = v
+		}
+	}
+
+	return nil
+}
+
+func (t *Tournaments) FetchTournaments(date string, client *customClient) error {
+	err := t.fetchTournaments(date, client)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
