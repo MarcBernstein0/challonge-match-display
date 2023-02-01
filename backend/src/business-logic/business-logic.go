@@ -142,7 +142,11 @@ func (t *Tournaments) fetchTournaments(date string, client *customClient) error 
 
 	}
 
-	params = map[string]string{
+	return nil
+}
+
+func (t *Tournaments) fetchParticipants(client *customClient) error {
+	params := map[string]string{
 		"api_key": client.config.apiKey,
 	}
 
@@ -151,7 +155,7 @@ func (t *Tournaments) fetchTournaments(date string, client *customClient) error 
 			v.Participants = make(map[int]string)
 			path := fmt.Sprintf("/tournaments/%v/participants.json", k)
 			var participants models.Participants
-			err = client.fetchData(params, path, &participants)
+			err := client.fetchData(params, path, &participants)
 			if err != nil {
 				return err
 			}
@@ -171,6 +175,11 @@ func (t *Tournaments) fetchTournaments(date string, client *customClient) error 
 
 func (t *Tournaments) FetchTournaments(date string, client *customClient) error {
 	err := t.fetchTournaments(date, client)
+	if err != nil {
+		return err
+	}
+
+	err = t.fetchParticipants(client)
 	if err != nil {
 		return err
 	}
