@@ -10,6 +10,7 @@ func RouteSetup(client *businesslogic.CustomClient, tournamentCache *businesslog
 
 	r.Use(Middleware())
 	r.GET("/health", HealthCheck)
+	r.GET("/matches", MatchesGET(client, tournamentCache))
 
 	return r
 }
