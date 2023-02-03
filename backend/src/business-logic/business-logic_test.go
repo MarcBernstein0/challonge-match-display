@@ -17,8 +17,9 @@ import (
 var server *httptest.Server
 
 const (
-	MOCK_API_KEY      = "mock_api_key"
-	MOCK_API_USERNAME = "mock_api_username"
+	MOCK_API_KEY        = "mock_api_key"
+	MOCK_API_USERNAME   = "mock_api_username"
+	NO_TOURNAMENTS_DATE = "2025-02-03"
 )
 
 func testApiAuth(apiKey string) bool {
@@ -55,7 +56,7 @@ func mockFetchTournamentEndpoint(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(sc)
 
 	date := r.URL.Query().Get("created_after")
-	if date == "2022-07-16" {
+	if date == NO_TOURNAMENTS_DATE {
 		w.Write([]byte("[]"))
 		return
 	}
@@ -188,7 +189,7 @@ func TestMain(m *testing.M) {
 		}
 	}))
 
-	fmt.Println("mocking customClient")
+	fmt.Println("mocking CustomClient")
 
 	fmt.Println("run tests")
 	m.Run()
@@ -199,7 +200,7 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 		name      string
 		date      string
 		fetchData *Tournaments
-		client    *customClient
+		client    *CustomClient
 		wantData  *Tournaments
 		wantErr   error
 	}{
@@ -244,7 +245,7 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 		},
 		{
 			name:      "no data found but response ok",
-			date:      "2022-07-16",
+			date:      NO_TOURNAMENTS_DATE,
 			fetchData: NewTournament(),
 			client:    NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
 			wantData:  NewTournament(),
@@ -274,7 +275,7 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 		name      string
 		date      string
 		fetchData *Tournaments
-		client    *customClient
+		client    *CustomClient
 		wantData  []models.TournamentMatches
 		wantErr   error
 	}{
@@ -385,6 +386,123 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 			if testCase.wantErr != nil {
 				assert.EqualError(t, gotErr, testCase.wantErr.Error())
 			} else {
+				assert.NoError(t, gotErr)
+			}
+		})
+	}
+}
+
+func TestTournamentCacheUpdate(t *testing.T) {
+	tt := []struct {
+		name      string
+		date      string
+		fetchData *Tournaments
+		client    *CustomClient
+		wantData  *Tournaments
+		wantErr   error
+	}{
+		{
+			name: "Reset Data",
+			date: NO_TOURNAMENTS_DATE,
+			fetchData: &Tournaments{
+				TournamentInfo: map[int]struct {
+					Game         string
+					Participants map[int]string
+				}{
+					10879090: {
+						Game: "Guilty Gear -Strive-",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+					10879091: {
+						Game: "DNF Duel",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+				},
+				Timestamp: time.Now().Add(-1 * (30 * time.Hour)),
+			},
+			wantData: NewTournament(),
+			client:   NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			wantErr:  nil,
+		},
+		{
+			name: "call for update but no update happens",
+			date: time.Now().Local().Format("2006-01-02"),
+			fetchData: &Tournaments{
+				TournamentInfo: map[int]struct {
+					Game         string
+					Participants map[int]string
+				}{
+					10879090: {
+						Game: "Guilty Gear -Strive-",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+					10879091: {
+						Game: "DNF Duel",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+				},
+				Timestamp: time.Now().Add(-1 * (30 * time.Minute)),
+			},
+			wantData: &Tournaments{
+				TournamentInfo: map[int]struct {
+					Game         string
+					Participants map[int]string
+				}{
+					10879090: {
+						Game: "Guilty Gear -Strive-",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+					10879091: {
+						Game: "DNF Duel",
+						Participants: map[int]string{
+							166014671: "test",
+							166014672: "test2",
+							166014673: "test3",
+							166014674: "test4",
+						},
+					},
+				},
+			},
+			client:  NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			wantErr: nil,
+		},
+	}
+
+	for _, testCase := range tt {
+		t.Run(testCase.name, func(t *testing.T) {
+			gotErr := testCase.fetchData.UpdateTournamentCache(testCase.date, testCase.client)
+			if testCase.wantErr != nil {
+				assert.Equal(t, testCase.wantData.TournamentInfo, testCase.fetchData.TournamentInfo)
+				assert.EqualError(t, gotErr, testCase.wantErr.Error())
+			} else {
+				if assert.NotNil(t, testCase.fetchData.TournamentInfo) {
+					assert.Equal(t, testCase.wantData.TournamentInfo, testCase.fetchData.TournamentInfo)
+				}
 				assert.NoError(t, gotErr)
 			}
 		})

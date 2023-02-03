@@ -12,6 +12,11 @@ import (
 	"github.com/MarcBernstein0/match-display/src/models"
 )
 
+const (
+	UPDATE_TIMER         = 20 * time.Minute
+	COMPLETE_RESET_TIMER = 24 * time.Hour
+)
+
 var (
 	ErrCouldNotCreateReq error = errors.New("could not create request")
 	ErrCouldNotCreateRes error = errors.New("could not create response")
@@ -37,12 +42,12 @@ type (
 	FetchData interface {
 		// FetchTournaments fetch all tournaments created after a specific date
 		// GET https://api.challonge.com/v1/tournaments.{json|xml}
-		FetchTournaments(date string, client *customClient) error
+		FetchTournaments(date string, client *CustomClient) error
 
-		FetchMatches(client *customClient) ([]models.TournamentMatches, error)
+		FetchMatches(client *CustomClient) ([]models.TournamentMatches, error)
 	}
 
-	customClient struct {
+	CustomClient struct {
 		baseURL string
 		client  *http.Client
 		config  struct {
@@ -63,8 +68,8 @@ func NewTournament() *Tournaments {
 	return &t
 }
 
-func NewClient(baseURL, username, apiKey string, client *http.Client) *customClient {
-	return &customClient{
+func NewClient(baseURL, username, apiKey string, client *http.Client) *CustomClient {
+	return &CustomClient{
 		baseURL: baseURL,
 		client:  client,
 		config: struct {
@@ -77,7 +82,7 @@ func NewClient(baseURL, username, apiKey string, client *http.Client) *customCli
 	}
 }
 
-func (c *customClient) fetchData(params map[string]string, path string, result any) error {
+func (c *CustomClient) fetchData(params map[string]string, path string, result any) error {
 	req, err := http.NewRequest(http.MethodGet, c.baseURL+path, nil)
 	if err != nil {
 		return fmt.Errorf("%w. %s", ErrCouldNotCreateReq, http.StatusText(http.StatusInternalServerError))
@@ -108,7 +113,7 @@ func (c *customClient) fetchData(params map[string]string, path string, result a
 	return nil
 }
 
-func (t *Tournaments) fetchTournaments(date string, client *customClient) error {
+func (t *Tournaments) fetchTournaments(date string, client *CustomClient) error {
 
 	// get tournament info
 	var challongeTournaments models.Tournaments
@@ -147,7 +152,7 @@ func (t *Tournaments) fetchTournaments(date string, client *customClient) error 
 	return nil
 }
 
-func (t *Tournaments) fetchParticipants(client *customClient) error {
+func (t *Tournaments) fetchParticipants(client *CustomClient) error {
 	params := map[string]string{
 		"api_key": client.config.apiKey,
 	}
@@ -175,7 +180,7 @@ func (t *Tournaments) fetchParticipants(client *customClient) error {
 	return nil
 }
 
-func (t *Tournaments) FetchTournaments(date string, client *customClient) error {
+func (t *Tournaments) FetchTournaments(date string, client *CustomClient) error {
 	err := t.fetchTournaments(date, client)
 	if err != nil {
 		return err
@@ -186,10 +191,12 @@ func (t *Tournaments) FetchTournaments(date string, client *customClient) error 
 		return err
 	}
 
+	t.Timestamp = time.Now()
+
 	return nil
 }
 
-func (t *Tournaments) FetchMatches(client *customClient) ([]models.TournamentMatches, error) {
+func (t *Tournaments) FetchMatches(client *CustomClient) ([]models.TournamentMatches, error) {
 	if len(t.TournamentInfo) == 0 {
 		return nil, fmt.Errorf("%w, %s", ErrServerProblem, http.StatusText(http.StatusInternalServerError))
 	}
@@ -243,4 +250,27 @@ func (t *Tournaments) FetchMatches(client *customClient) ([]models.TournamentMat
 	// fmt.Println(result)
 
 	return result, nil
+}
+
+func (t *Tournaments) UpdateTournamentCache(date string, client *CustomClient) error {
+
+	if time.Since(t.Timestamp) >= COMPLETE_RESET_TIMER {
+		fmt.Println("resetingTime")
+		t.TournamentInfo = make(map[int]struct {
+			Game         string
+			Participants map[int]string
+		})
+		err := t.FetchTournaments(date, client)
+		if err != nil {
+			return fmt.Errorf("%w, %s", err, "error when updating tournament cache")
+		}
+	} else if time.Since(t.Timestamp) >= UPDATE_TIMER {
+		fmt.Println("updateTime")
+		err := t.FetchTournaments(date, client)
+		if err != nil {
+			return fmt.Errorf("%w, %s", err, "error when updating tournament cache")
+		}
+	}
+
+	return nil
 }

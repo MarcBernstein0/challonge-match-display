@@ -2,7 +2,9 @@ package routes
 
 import (
 	"net/http"
+	"time"
 
+	businesslogic "github.com/MarcBernstein0/match-display/src/business-logic"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,9 +14,20 @@ func HealthCheck(c *gin.Context) {
 	})
 }
 
-// type Date struct {
-// 	Date time.Time `form:"date" binding:"required" time_format:"2006-01-02"`
-// }
+type (
+	Date struct {
+		Date time.Time `form:"date" binding:"required" time_format:"2006-01-02"`
+	}
+)
+
+func MatchesGET(customClient *businesslogic.CustomClient, tournamentCache *businesslogic.Tournaments) gin.HandlerFunc {
+
+	fn := func(ctx *gin.Context) {
+		// var date Date
+	}
+
+	return fn
+}
 
 // func MatchesGET(fetchData mainlogic.FetchData) gin.HandlerFunc {
 // 	fn := func(c *gin.Context) {
