@@ -1,7 +1,7 @@
 package routes
 
 import (
-	businesslogic "github.com/MarcBernstein0/match-display/src/business-logic"
+	businesslogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic"
 	"github.com/gin-gonic/gin"
 )
 

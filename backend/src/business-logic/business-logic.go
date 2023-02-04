@@ -9,7 +9,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/MarcBernstein0/match-display/src/models"
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/models"
 )
 
 const (

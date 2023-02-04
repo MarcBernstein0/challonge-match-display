@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	businesslogic "github.com/MarcBernstein0/match-display/src/business-logic"
-	"github.com/MarcBernstein0/match-display/src/routes"
+	businesslogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic"
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/routes"
 )
 
 const BASE_URL = "https://api.challonge.com/v1"

@@ -6,8 +6,8 @@ import (
 	"sort"
 	"time"
 
-	businesslogic "github.com/MarcBernstein0/match-display/src/business-logic"
-	"github.com/MarcBernstein0/match-display/src/models"
+	businesslogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic"
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/models"
 	"github.com/gin-gonic/gin"
 )
 
