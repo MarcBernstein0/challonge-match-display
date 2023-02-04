@@ -256,7 +256,7 @@ func TestCustomClient_FetchTournaments(t *testing.T) {
 	for _, testCase := range tt {
 		t.Run(testCase.name, func(t *testing.T) {
 
-			gotErr := testCase.fetchData.FetchTournaments(testCase.date, testCase.client)
+			gotErr := testCase.fetchData.FetchTournaments(testCase.date, testCase.client, false)
 			if testCase.wantErr != nil {
 				assert.Equal(t, testCase.wantData.TournamentInfo, testCase.fetchData.TournamentInfo)
 				assert.EqualError(t, gotErr, testCase.wantErr.Error())

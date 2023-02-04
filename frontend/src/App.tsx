@@ -41,7 +41,7 @@ function App() {
           setIsError(true);
           setError(err);
         });
-    }, 30000);
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 

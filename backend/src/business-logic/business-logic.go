@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	UPDATE_TIMER         = 20 * time.Minute
+	UPDATE_TIMER         = 10 * time.Minute
 	COMPLETE_RESET_TIMER = 24 * time.Hour
 )
 
@@ -153,13 +153,13 @@ func (t *Tournaments) fetchTournaments(date string, client *CustomClient) error 
 	return nil
 }
 
-func (t *Tournaments) fetchParticipants(client *CustomClient) error {
+func (t *Tournaments) fetchParticipants(client *CustomClient, updateParticipants bool) error {
 	params := map[string]string{
 		"api_key": client.config.apiKey,
 	}
 
 	for k, v := range t.TournamentInfo {
-		if len(v.Participants) == 0 {
+		if len(v.Participants) == 0 || updateParticipants {
 			v.Participants = make(map[int]string)
 			path := fmt.Sprintf("/tournaments/%v/participants.json", k)
 			var participants models.Participants
@@ -181,13 +181,13 @@ func (t *Tournaments) fetchParticipants(client *CustomClient) error {
 	return nil
 }
 
-func (t *Tournaments) FetchTournaments(date string, client *CustomClient) error {
+func (t *Tournaments) FetchTournaments(date string, client *CustomClient, updateParticipants bool) error {
 	err := t.fetchTournaments(date, client)
 	if err != nil {
 		return err
 	}
 
-	err = t.fetchParticipants(client)
+	err = t.fetchParticipants(client, updateParticipants)
 	if err != nil {
 		return err
 	}
@@ -255,27 +255,34 @@ func (t *Tournaments) FetchMatches(client *CustomClient) ([]models.TournamentMat
 
 func (t *Tournaments) UpdateTournamentCache(date string, client *CustomClient) error {
 
-	if time.Since(t.Timestamp) >= COMPLETE_RESET_TIMER {
+	timeSince := time.Since(t.Timestamp)
+	if timeSince >= COMPLETE_RESET_TIMER {
 		fmt.Println("resetingTime")
 		t.TournamentInfo = make(map[int]struct {
 			Game         string
 			Participants map[int]string
 		})
-		err := t.FetchTournaments(date, client)
+		err := t.FetchTournaments(date, client, true)
 		if err != nil {
 			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when timestamp exceeded reset time")
 		}
-	} else if time.Since(t.Timestamp) >= UPDATE_TIMER {
+	} else if timeSince >= UPDATE_TIMER {
 		fmt.Println("updateTime")
-		err := t.FetchTournaments(date, client)
+		err := t.FetchTournaments(date, client, true)
 		if err != nil {
 			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when cache timestamp exceeded update time")
 		}
 	} else if len(t.TournamentInfo) == 0 {
 		fmt.Println("cache is empty, call to fill")
-		err := t.FetchTournaments(date, client)
+		err := t.FetchTournaments(date, client, true)
 		if err != nil {
 			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when cache is empty")
+		}
+	} else {
+		fmt.Println("default will ")
+		err := t.FetchTournaments(date, client, false)
+		if err != nil {
+			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when cache timestamp exceeded update time")
 		}
 	}
 
