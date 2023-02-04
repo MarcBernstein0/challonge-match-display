@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	businesslogic "github.com/MarcBernstein0/match-display/src/business-logic"
@@ -50,6 +51,23 @@ func MatchesGET(customClient *businesslogic.CustomClient, tournamentCache *busin
 			ctx.JSON(http.StatusOK, matches)
 			return
 		}
+		fmt.Printf("tournaments %+v\n", tournamentCache)
+		// get matches
+		matches, err = tournamentCache.FetchMatches(customClient)
+		if err != nil {
+			errResponse := models.ErrorResponse{
+				Message:      "failed to get match data",
+				ErrorMessage: err.Error(),
+			}
+			ctx.JSON(http.StatusInternalServerError, errResponse)
+			return
+		}
+
+		sort.SliceStable(matches, func(i, j int) bool {
+			return matches[i].GameName <= matches[j].GameName
+		})
+
+		ctx.JSON(http.StatusOK, matches)
 
 	}
 

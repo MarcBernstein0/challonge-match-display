@@ -208,8 +208,6 @@ func TestMain(m *testing.M) {
 		}
 	}))
 
-	mockClient = businesslogic.NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient)
-	mockTournament = businesslogic.NewTournament()
 	m.Run()
 }
 
@@ -224,38 +222,49 @@ func TestHealthCheckRoute(t *testing.T) {
 	assert.Equal(t, `{"status":"UP"}`, w.Body.String())
 }
 
+// mockClient = businesslogic.NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient)
+//
+//	mockTournament = businesslogic.NewTournament()
 func TestGetMatchesRoute(t *testing.T) {
 	tt := []struct {
-		name       string
-		date       string
-		statusCode int
-		wantData   []models.TournamentMatches
-		expectErr  bool
-		wantErr    models.ErrorResponse
+		name            string
+		date            string
+		statusCode      int
+		client          *businesslogic.CustomClient
+		tournamentCache *businesslogic.Tournaments
+		wantData        []models.TournamentMatches
+		expectErr       bool
+		wantErr         models.ErrorResponse
 	}{
 		{
-			name:       "response not ok",
-			date:       "",
-			statusCode: http.StatusBadRequest,
-			wantData:   nil,
-			expectErr:  true,
+			name:            "response not ok",
+			date:            "",
+			statusCode:      http.StatusBadRequest,
+			client:          businesslogic.NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			tournamentCache: businesslogic.NewTournament(),
+			wantData:        nil,
+			expectErr:       true,
 			wantErr: models.ErrorResponse{
 				Message:      "did not fill out required 'date' query field",
 				ErrorMessage: "Key: 'Date.Date' Error:Field validation for 'Date' failed on the 'required' tag",
 			},
 		},
 		{
-			name:       "response ok but empty",
-			date:       NO_TOURNAMENTS_DATE,
-			statusCode: http.StatusOK,
-			wantData:   []models.TournamentMatches{},
-			expectErr:  false,
-			wantErr:    models.ErrorResponse{},
+			name:            "response ok but empty",
+			date:            NO_TOURNAMENTS_DATE,
+			client:          businesslogic.NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			tournamentCache: businesslogic.NewTournament(),
+			statusCode:      http.StatusOK,
+			wantData:        []models.TournamentMatches{},
+			expectErr:       false,
+			wantErr:         models.ErrorResponse{},
 		},
 		{
-			name:       "single tournament",
-			date:       "2022-07-19",
-			statusCode: http.StatusOK,
+			name:            "single tournament",
+			date:            "2022-07-19",
+			client:          businesslogic.NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			tournamentCache: businesslogic.NewTournament(),
+			statusCode:      http.StatusOK,
 			wantData: []models.TournamentMatches{
 				{
 					GameName:     "Guilty Gear -Strive-",
@@ -283,11 +292,66 @@ func TestGetMatchesRoute(t *testing.T) {
 			expectErr: false,
 			wantErr:   models.ErrorResponse{},
 		},
+		{
+			name:            "multiple tournaments",
+			date:            "2022-07-18",
+			client:          businesslogic.NewClient(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			tournamentCache: businesslogic.NewTournament(),
+			statusCode:      http.StatusOK,
+			wantData: []models.TournamentMatches{
+				{
+					GameName:     "Guilty Gear -Strive-",
+					TournamentID: 10879090,
+					MatchList: []models.Match{
+						{
+							ID:          267800918,
+							Player1ID:   166014671,
+							Player1Name: "test",
+							Player2ID:   166014674,
+							Player2Name: "test4",
+							Round:       1,
+						},
+						{
+							ID:          267800919,
+							Player1ID:   166014672,
+							Player1Name: "test2",
+							Player2ID:   166014673,
+							Player2Name: "test3",
+							Round:       1,
+						},
+					},
+				},
+				{
+					GameName:     "DNF Duel",
+					TournamentID: 10879091,
+					MatchList: []models.Match{
+						{
+							ID:          267800918,
+							Player1ID:   166014671,
+							Player1Name: "test",
+							Player2ID:   166014674,
+							Player2Name: "test4",
+							Round:       1,
+						},
+						{
+							ID:          267800919,
+							Player1ID:   166014672,
+							Player1Name: "test2",
+							Player2ID:   166014673,
+							Player2Name: "test3",
+							Round:       1,
+						},
+					},
+				},
+			},
+			wantErr: models.ErrorResponse{},
+		},
 	}
 
-	router := RouteSetup(mockClient, mockTournament)
 	for _, testCase := range tt {
 		t.Run(testCase.name, func(t *testing.T) {
+			router := RouteSetup(testCase.client, testCase.tournamentCache)
+
 			w := httptest.NewRecorder()
 
 			req, _ := http.NewRequest(http.MethodGet, "/matches", nil)

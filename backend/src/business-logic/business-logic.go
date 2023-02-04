@@ -39,13 +39,13 @@ type (
 		Timestamp time.Time
 	}
 
-	FetchData interface {
-		// FetchTournaments fetch all tournaments created after a specific date
-		// GET https://api.challonge.com/v1/tournaments.{json|xml}
-		FetchTournaments(date string, client *CustomClient) error
+	// FetchData interface {
+	// 	// FetchTournaments fetch all tournaments created after a specific date
+	// 	// GET https://api.challonge.com/v1/tournaments.{json|xml}
+	// 	FetchTournaments(date string, client *CustomClient) error
 
-		FetchMatches(client *CustomClient) ([]models.TournamentMatches, error)
-	}
+	// 	FetchMatches(client *CustomClient) ([]models.TournamentMatches, error)
+	// }
 
 	CustomClient struct {
 		baseURL string
@@ -63,6 +63,7 @@ func NewTournament() *Tournaments {
 			Game         string
 			Participants map[int]string
 		}),
+		Timestamp: time.Now(),
 	}
 
 	return &t
@@ -262,13 +263,19 @@ func (t *Tournaments) UpdateTournamentCache(date string, client *CustomClient) e
 		})
 		err := t.FetchTournaments(date, client)
 		if err != nil {
-			return fmt.Errorf("%w, %s", err, "error when updating tournament cache")
+			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when timestamp exceeded reset time")
 		}
 	} else if time.Since(t.Timestamp) >= UPDATE_TIMER {
 		fmt.Println("updateTime")
 		err := t.FetchTournaments(date, client)
 		if err != nil {
-			return fmt.Errorf("%w, %s", err, "error when updating tournament cache")
+			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when cache timestamp exceeded update time")
+		}
+	} else if len(t.TournamentInfo) == 0 {
+		fmt.Println("cache is empty, call to fill")
+		err := t.FetchTournaments(date, client)
+		if err != nil {
+			return fmt.Errorf("%w, %s", err, "error when updating tournament cache when cache is empty")
 		}
 	}
 
