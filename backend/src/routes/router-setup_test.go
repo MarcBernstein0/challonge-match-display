@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	mainlogic "github.com/MarcBernstein0/match-display/src/main-logic"
-	"github.com/MarcBernstein0/match-display/src/models"
+	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/main-logic"
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/models"
 	"github.com/stretchr/testify/assert"
 )
 
