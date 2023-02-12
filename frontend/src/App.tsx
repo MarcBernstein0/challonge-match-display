@@ -71,8 +71,8 @@ function App() {
                   <h1 style={{
                     textAlign: "center"
                   }}>
-                    IF YOU SEE YOUR MATCH DISPLAYED UP HERE YOU CAN GO AHEAD AND PLAY THE MATCH. <br/>
-                    PLEASE MAKE SURE YOU REPORT YOUR RESULTS TO YOUR TOURNAMENT'S TO.
+                    IF YOU SEE YOUR MATCH DISPLAYED PLEASE GO AHEAD AND PLAY YOUR MATCH. <br/>
+                    MAKE SURE TO REPORT RESULTS TO THE TOURNAMENT'S TO.
                   </h1>
                 </Grid>
             </Grid>
