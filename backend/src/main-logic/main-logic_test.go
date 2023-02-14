@@ -128,6 +128,11 @@ func mockFetchMatchesEndpoint(w http.ResponseWriter, r *http.Request) {
 	sc := http.StatusOK
 	w.WriteHeader(sc)
 
+	if strings.Contains(string(r.URL.Path), "10879095") {
+		w.Write([]byte("[]"))
+		return
+	}
+
 	jsonFile, err := os.Open("./test-data/testMatchesData.json")
 	if err != nil {
 		fmt.Println(err)
@@ -184,6 +189,8 @@ func TestMain(m *testing.M) {
 			mockFetchMatchesEndpoint(w, r)
 		case "/tournaments/10879091/matches.json":
 			mockFetchMatchesEndpoint2(w, r)
+		case "/tournaments/10879095/matches.json":
+			mockFetchMatchesEndpoint(w, r)
 		default:
 			http.NotFoundHandler().ServeHTTP(w, r)
 		}
@@ -370,10 +377,8 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 		wantErr   error
 	}{
 		{
-			name: "response not ok",
-			fetchData: func(baseURL, username, apiKey string, client *http.Client) *customClient {
-				return New(baseURL, username, apiKey, client)
-			}(server.URL, "ashdfhsf", "asdfhdsfh", http.DefaultClient),
+			name:      "response not ok",
+			fetchData: New(server.URL, "ashdfhsf", "asdfhdsfh", http.DefaultClient),
 			inputData: []models.TournamentParticipants{
 				{
 					GameName:     "Guilty Gear -Strive-",
@@ -390,10 +395,33 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 			wantErr:  fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(http.StatusUnauthorized)),
 		},
 		{
-			name: "found matches",
-			fetchData: func(baseURL, username, apiKey string, client *http.Client) *customClient {
-				return New(baseURL, username, apiKey, client)
-			}(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+
+			name:      "response ok but no matches",
+			fetchData: New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			inputData: []models.TournamentParticipants{
+				{
+					GameName:     "Guilty Gear -Strive-",
+					TournamentID: 10879095,
+					Participant: map[int]string{
+						166014671: "test",
+						166014672: "test2",
+						166014673: "test3",
+						166014674: "test4",
+					},
+				},
+			},
+			wantData: []models.TournamentMatches{
+				{
+					GameName:     "Guilty Gear -Strive-",
+					TournamentID: 10879095,
+					MatchList:    []models.Match{},
+				},
+			},
+			wantErr: nil,
+		},
+		{
+			name:      "found matches",
+			fetchData: New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
 			inputData: []models.TournamentParticipants{
 				{
 					GameName:     "Guilty Gear -Strive-",
@@ -433,10 +461,8 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "multiple tournaments",
-			fetchData: func(baseURL, username, apiKey string, client *http.Client) *customClient {
-				return New(baseURL, username, apiKey, client)
-			}(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
+			name:      "multiple tournaments",
+			fetchData: New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient),
 			inputData: []models.TournamentParticipants{
 				{
 					GameName:     "Guilty Gear -Strive-",
@@ -513,6 +539,7 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			// t.Parallel()
 			gotData, gotErr := testCase.fetchData.FetchMatches(testCase.inputData)
+			// fmt.Printf("%+v\n", gotData)
 			assert.ElementsMatch(t, testCase.wantData, gotData)
 			if testCase.wantErr != nil {
 				assert.EqualError(t, gotErr, testCase.wantErr.Error())

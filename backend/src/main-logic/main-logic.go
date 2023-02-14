@@ -98,10 +98,11 @@ func (c *customClient) FetchTournaments(date string) ([]models.Tournament, error
 	if err != nil {
 		return nil, fmt.Errorf("%w. %s", ErrServerProblem, http.StatusText(http.StatusInternalServerError))
 	}
+	// fmt.Printf("%+v, %v\n", tournaments, len(tournaments))
+
 	if len(tournaments) == 0 {
 		return []models.Tournament{}, nil
 	}
-	// fmt.Printf("%+v, %v\n", tournaments, len(tournaments))
 	var tournamentList []models.Tournament
 	for _, t := range tournaments {
 		tournamentList = append(tournamentList, t.Tournament)
@@ -261,7 +262,7 @@ func (c *customClient) fetchAllMatches(tournamentParticiapnt models.TournamentPa
 	if len(matches) == 0 {
 		matchResultChan <- matchResult{
 			tournamentMatches: nil,
-			error:             fmt.Errorf("%w. %s", ErrNoData, http.StatusText(http.StatusNotFound)),
+			error:             nil,
 		}
 		// return nil, fmt.Errorf("%w. %s", ErrServerProblem, http.StatusText(http.StatusNotFound))
 	}
@@ -304,17 +305,20 @@ func (c *customClient) FetchMatches(tournamentParticipants []models.TournamentPa
 		if tournamentMatchResult.error != nil {
 			return nil, tournamentMatchResult.error
 		}
-		sort.SliceStable(tournamentMatchResult.tournamentMatches.MatchList, func(i, j int) bool {
-			matchList := tournamentMatchResult.tournamentMatches.MatchList
-			// sort the same name if round matches
-			match1 := math.Abs(float64(matchList[i].Round))
-			match2 := math.Abs(float64(matchList[j].Round))
-			if match1 == match2 {
-				return matchList[i].Player1Name <= matchList[j].Player1Name
-			}
-			return match1 < match2
-		})
-		tournamentMatches = append(tournamentMatches, *tournamentMatchResult.tournamentMatches)
+		if tournamentMatchResult.tournamentMatches != nil {
+			sort.SliceStable(tournamentMatchResult.tournamentMatches.MatchList, func(i, j int) bool {
+				matchList := tournamentMatchResult.tournamentMatches.MatchList
+				// sort the same name if round matches
+				match1 := math.Abs(float64(matchList[i].Round))
+				match2 := math.Abs(float64(matchList[j].Round))
+				if match1 == match2 {
+					return matchList[i].Player1Name <= matchList[j].Player1Name
+				}
+				return match1 < match2
+			})
+			tournamentMatches = append(tournamentMatches, *tournamentMatchResult.tournamentMatches)
+		}
+
 	}
 
 	// fmt.Printf("All matches: %+v\n", tournamentMatches)
