@@ -20,7 +20,7 @@ function App() {
     console.log(process.env);
     Match.getMatches(parsedDate)
       .then((data) => {
-        console.log("data result", data)
+        console.log("data result came back");
         setIsLoaded(true);
         setMatches(data);
       })
@@ -33,7 +33,7 @@ function App() {
     const interval = setInterval(() => {
       Match.getMatches(parsedDate)
         .then((data) => {
-          console.log(data)
+          console.log("data result came back");
           setIsLoaded(true);
           setMatches(data);
         })
