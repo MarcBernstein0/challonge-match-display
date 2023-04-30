@@ -1,4 +1,4 @@
-import { Matches } from "../models/matches.interface";
+import { Match, Matches } from "../models/matches.interface";
 import '../css/table.css';
 
 interface TableProps {
@@ -6,8 +6,7 @@ interface TableProps {
 }
 
 export default function CustomizedTables({ matchData }: TableProps): JSX.Element {
-    const shortenMatchList = matchData.match_list.slice(0, 5); 
-
+    const matchDataList: Match[] = matchData.match_list;
     return (
         <table>
             <thead>
@@ -23,7 +22,7 @@ export default function CustomizedTables({ matchData }: TableProps): JSX.Element
                 
             </thead>
             <tbody>
-                {shortenMatchList.map(match => (
+                {matchDataList.map(match => (
                     <tr>
                         <td key={Math.random()}>{`${match.player1_name} vs ${match.player2_name}`}</td>
                         <td key={Math.random()}>{match.round <= -1 ? `losers ${Math.abs(match.round)}`: `winners ${match.round}`}</td>
