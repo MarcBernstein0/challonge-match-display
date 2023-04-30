@@ -6,6 +6,8 @@ interface TableProps {
 }
 
 export default function CustomizedTables({ matchData }: TableProps): JSX.Element {
+    const shortenMatchList = matchData.match_list.slice(0, 5); 
+
     return (
         <table>
             <thead>
@@ -21,7 +23,7 @@ export default function CustomizedTables({ matchData }: TableProps): JSX.Element
                 
             </thead>
             <tbody>
-                {matchData.match_list.map(match => (
+                {shortenMatchList.map(match => (
                     <tr>
                         <td key={Math.random()}>{`${match.player1_name} vs ${match.player2_name}`}</td>
                         <td key={Math.random()}>{match.round <= -1 ? `losers ${Math.abs(match.round)}`: `winners ${match.round}`}</td>
