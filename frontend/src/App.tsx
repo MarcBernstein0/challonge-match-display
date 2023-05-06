@@ -8,6 +8,7 @@ import moment from 'moment';
 import { AxiosError } from 'axios';
 import { BrowserView, MobileView } from 'react-device-detect';
 import CustomizedMenus from './components/dropdown';
+import Footer from './components/footer';
 
 
 
@@ -101,6 +102,7 @@ function App() {
         </Box>
       </MobileView>
     </span>
+
 
   );
 
