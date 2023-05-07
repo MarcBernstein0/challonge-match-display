@@ -101,6 +101,7 @@ function App() {
           <CustomizedMenus games={matchResult} />
         </Box>
       </MobileView>
+      <Footer />
     </span>
 
 

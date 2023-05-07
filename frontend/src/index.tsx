@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Footer from './components/footer';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -30,7 +29,6 @@ root.render(
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <App />
-      <Footer />
     </ThemeProvider>
   </React.StrictMode>
 );

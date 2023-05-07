@@ -1,62 +1,54 @@
-import { GitHub, Twitter } from "@mui/icons-material";
-import { Box, Container, Grid, Link, Typography } from "@mui/material";
 import { ReactElement } from "react";
-
-// const footerItems = [
-//   {
-//     link: "https://github.com/MarcBernstein0/challonge-match-display",
-//     icon: <GitHub />
-//   },
-//   {
-//     link: "https://twitter.com/TravelingCtrlr",
-//     icon: <Twitter />
-//   },
-// ]
+import "../css/footer.css"
+import { Box, Link, Typography } from "@mui/material";
+import { GitHub, Twitter } from "@mui/icons-material";
+import { Icon } from '@iconify/react';
 
 export default function Footer(): ReactElement {
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "auto",
-        backgroundColor: "secondary.main",
-        paddingTop: "1rem",
-        paddingBottom: "1rem",
-      }}
-    >
-      <Container maxWidth="lg">
-        <Grid container
-          direction="row"
-          justifyContent="center"
-          alignItems="center">
-          <Grid item xs={12} sx={{
-              textAlign: "center",
-              border: 1
-            }}>
-            <Typography color="black" variant="h5">
+    <Box sx={{
+      position: "fixed",
+      bottom: 0,
+      width: "100%"
+    }}>
+      <footer className="footer">
+        <div className="footer-container">
+          <div className="item1">
+            <Typography color="white" variant="h5">
               Pendending Matches
             </Typography>
-          </Grid>
-          <Grid item xs={6} sx={{ 
-            border: 1,
-            textAlign: "center" 
-            }}>
-            <p>Developed by Marc Bernstein(KosherSalt)</p><Link href="https://github.com/MarcBernstein0/challonge-match-display">
-              <GitHub />
-            </Link>
-          </Grid>
-          {/* {footerItems.map(item => (
-            <Grid item xs={6} sx={{
-              border: 1
-            }}>
-              <Link href={item.link} >
-                {item.icon}
-              </Link>
-            </Grid>
-          ))} */}
+          </div>
 
-        </Grid>
-      </Container>
+
+          <div className="item2">
+            <span style={{ paddingLeft: 5 }}>
+              Developed By Marc Bernstein <Link href="https://twitter.com/ujustgotbernied" target="_blank">@KosherSalt</Link>
+            </span>
+          </div>
+          <a
+            href="https://github.com/MarcBernstein0/challonge-match-display"
+            target="_blank"
+            className="item3"
+          >
+            <GitHub />
+          </a>
+          <a
+            href="https://twitter.com/ujustgotbernied"
+            target="_blank"
+            className="item4"
+          >
+            <Twitter />
+          </a>
+          <a
+            href="https://www.youtube.com/"
+            target="_blank"
+            className="item5"
+          >
+            <Icon icon="mdi:twitch" />
+          </a>
+
+        </div>
+      </footer>
     </Box>
-  )
+  );
 }
