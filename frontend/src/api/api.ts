@@ -3,9 +3,9 @@ import { Moment } from "moment";
 import { Matches } from "../models/matches.interface";
 
 const instance = axios.create({
-    baseURL: process.env.REACT_APP_MATCH_DISPLAY_URL,
+    // baseURL: process.env.REACT_APP_MATCH_DISPLAY_URL,
     // baseURL: "https://localhost:8080",
-    // baseURL: "https://challonge-match-display-backend.onrender.com",
+    baseURL: "https://challonge-match-display-backend.onrender.com",
     timeout: 180000,
     headers: {
         "Content-type": "application/json"
