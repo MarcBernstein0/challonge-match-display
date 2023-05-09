@@ -33,7 +33,7 @@ export default function Footer(): ReactElement {
             <GitHub />
           </a>
           <a
-            href="https://twitter.com/ujustgotbernied"
+            href="https://twitter.com/TravelingCtrlr"
             target="_blank"
             className="item4"
           >

@@ -15,7 +15,3 @@ services:
       dockerfile: ./frontend/container/Dockerfile
     ports:
       - "3000:8080"
-    environment:
-      - PORT=8080
-    env_file:
-      - ./frontend/.env

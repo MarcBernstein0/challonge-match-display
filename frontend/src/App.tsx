@@ -16,6 +16,7 @@ function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [matchResult, setMatches] = useState<Matches[]>([]);
 
+  console.log(process.env.NODE_ENV);
 
   useEffect(() => {
     const parsedDate = moment();
