@@ -91,7 +91,7 @@ function App() {
             <LoadingAnimation />
           </Grid>}
       </BrowserView>
-<!--       <MobileView>
+      {/* <MobileView>
         <Box display="flex"
              justifyContent="center"
              alignItems="center"
@@ -99,7 +99,7 @@ function App() {
         >
           <CustomizedMenus games={matchResult} />
         </Box>
-      </MobileView> -->
+      </MobileView>  */}
       <Footer />
     </span>
 
