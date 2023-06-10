@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Match } from './api/api';
 import LoadingAnimation from './components/loading';
@@ -6,8 +6,7 @@ import CustomizedTables from './components/table';
 import { Matches } from './models/matches.interface';
 import moment from 'moment';
 import { AxiosError } from 'axios';
-import { BrowserView, MobileView } from 'react-device-detect';
-import CustomizedMenus from './components/dropdown';
+import { BrowserView } from 'react-device-detect';
 import Footer from './components/footer';
 
 
@@ -27,9 +26,9 @@ function App() {
         setMatches(data);
       })
       .catch((err: AxiosError) => {
-        console.log("error occured");
+        console.log("error occurred");
         setIsLoaded(true);
-        console.error("error occured on website startup:", err)
+        console.error("error occurred on website startup:", err)
       });
 
     const interval = setInterval(() => {
@@ -41,7 +40,7 @@ function App() {
         })
         .catch((err: AxiosError) => {
           setIsLoaded(true);
-          console.error("error occured on website update:", err)
+          console.error("error occurred on website update:", err)
         });
     }, 90000);
     return () => clearInterval(interval);
