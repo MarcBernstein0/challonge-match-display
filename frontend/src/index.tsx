@@ -1,5 +1,5 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
-import { blueGrey, deepOrange, green, grey, purple } from '@mui/material/colors';
+import { blueGrey, grey } from '@mui/material/colors';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';

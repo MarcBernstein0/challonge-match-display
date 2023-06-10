@@ -413,7 +413,7 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 				{
 					GameName:     "Guilty Gear -Strive-",
 					TournamentID: 10879095,
-					MatchList:    []models.Match{},
+					MatchList:    []models.CustomMatch{},
 				},
 			},
 			wantErr: nil,
@@ -437,23 +437,20 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 				{
 					GameName:     "Guilty Gear -Strive-",
 					TournamentID: 10879090,
-					MatchList: []models.Match{
+					MatchList: []models.CustomMatch{
 						{
 							ID:          267800918,
-							Player1ID:   166014671,
 							Player1Name: "test",
-							Player2ID:   166014674,
 							Player2Name: "test4",
 							Round:       1,
-							UnderwayAt:  "mock time",
+							Underway:    true,
 						},
 						{
 							ID:          267800919,
-							Player1ID:   166014672,
 							Player1Name: "test2",
-							Player2ID:   166014673,
 							Player2Name: "test3",
 							Round:       1,
+							Underway:    false,
 						},
 					},
 				},
@@ -489,46 +486,40 @@ func TestCustomClient_FetchMatches(t *testing.T) {
 				{
 					GameName:     "Guilty Gear -Strive-",
 					TournamentID: 10879090,
-					MatchList: []models.Match{
+					MatchList: []models.CustomMatch{
 						{
 							ID:          267800918,
-							Player1ID:   166014671,
 							Player1Name: "test",
-							Player2ID:   166014674,
 							Player2Name: "test4",
 							Round:       1,
-							UnderwayAt:  "mock time",
+							Underway:    true,
 						},
 						{
 							ID:          267800919,
-							Player1ID:   166014672,
 							Player1Name: "test2",
-							Player2ID:   166014673,
 							Player2Name: "test3",
 							Round:       1,
+							Underway:    false,
 						},
 					},
 				},
 				{
 					GameName:     "DNF Duel",
 					TournamentID: 10879091,
-					MatchList: []models.Match{
+					MatchList: []models.CustomMatch{
 						{
 							ID:          267800918,
-							Player1ID:   166014671,
 							Player1Name: "test",
-							Player2ID:   166014674,
 							Player2Name: "test4",
 							Round:       1,
-							UnderwayAt:  "mock time",
+							Underway:    true,
 						},
 						{
 							ID:          267800919,
-							Player1ID:   166014672,
 							Player1Name: "test2",
-							Player2ID:   166014673,
 							Player2Name: "test3",
 							Round:       1,
+							Underway:    false,
 						},
 					},
 				},

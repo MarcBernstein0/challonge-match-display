@@ -266,12 +266,18 @@ func (c *customClient) fetchAllMatches(tournamentParticiapnt models.TournamentPa
 	tournamentMatches := models.TournamentMatches{
 		GameName:     gameName,
 		TournamentID: tournamentID,
-		MatchList:    make([]models.Match, 0),
+		MatchList:    make([]models.CustomMatch, 0),
 	}
 	for _, m := range matches {
-		m.Match.Player1Name = participants[m.Match.Player1ID]
-		m.Match.Player2Name = participants[m.Match.Player2ID]
-		tournamentMatches.MatchList = append(tournamentMatches.MatchList, m.Match)
+		customMatch := models.CustomMatch{
+			ID:          m.Match.ID,
+			Player1Name: participants[m.Match.Player1ID],
+			Player2Name: participants[m.Match.Player2ID],
+			Round:       m.Match.Round,
+			Underway:    len(m.Match.UnderwayAt) != 0,
+		}
+		fmt.Println("customMatch:", customMatch)
+		tournamentMatches.MatchList = append(tournamentMatches.MatchList, customMatch)
 	}
 	// fmt.Printf("%+v\n", tournamentMatches)
 
