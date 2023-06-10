@@ -11,6 +11,7 @@ type (
 		Player2ID   int    `json:"player2_id"`
 		Player2Name string `json:"player2_name"`
 		Round       int    `json:"round"`
+		UnderwayAt  string `json:"underway_at,omitempty"`
 	}
 	TournamentMatches struct {
 		GameName     string  `json:"game_name"`

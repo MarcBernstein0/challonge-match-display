@@ -43,22 +43,19 @@ type (
 		baseURL string
 		client  *http.Client
 		config  struct {
-			username string
-			apiKey   string
+			apiKey string
 		}
 	}
 )
 
-func New(baseURL, username, apiKey string, client *http.Client) *customClient {
+func New(baseURL, apiKey string, client *http.Client) *customClient {
 	return &customClient{
 		baseURL: baseURL,
 		client:  client,
 		config: struct {
-			username string
-			apiKey   string
+			apiKey string
 		}{
-			username: username,
-			apiKey:   apiKey,
+			apiKey: apiKey,
 		},
 	}
 }

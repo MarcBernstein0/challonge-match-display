@@ -21,8 +21,7 @@ var (
 )
 
 const (
-	MOCK_API_KEY      = "mock_api_key"
-	MOCK_API_USERNAME = "mock_api_username"
+	MOCK_API_KEY = "mock_api_key"
 )
 
 func testApiKeyAuth(apiKey string) bool {
@@ -206,7 +205,7 @@ func TestMain(m *testing.M) {
 		}
 	}))
 
-	mockFetch = mainlogic.New(server.URL, MOCK_API_USERNAME, MOCK_API_KEY, http.DefaultClient)
+	mockFetch = mainlogic.New(server.URL, MOCK_API_KEY, http.DefaultClient)
 	m.Run()
 }
 
@@ -214,7 +213,7 @@ func TestHealthCheckRoute(t *testing.T) {
 	router := RouteSetup(mockFetch)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/health", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/v1/health", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -242,7 +241,7 @@ func TestGetMatchesRoute(t *testing.T) {
 			},
 		},
 		{
-			name:       "response ok but emtpy",
+			name:       "response ok but empty",
 			date:       "2022-07-20",
 			statusCode: http.StatusOK,
 			wantData:   []models.TournamentMatches{},
@@ -340,7 +339,7 @@ func TestGetMatchesRoute(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			// t.Parallel()
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest(http.MethodGet, "/matches", nil)
+			req, _ := http.NewRequest(http.MethodGet, "/v1/matches", nil)
 			q := req.URL.Query()
 			q.Add("date", testCase.date)
 			req.URL.RawQuery = q.Encode()

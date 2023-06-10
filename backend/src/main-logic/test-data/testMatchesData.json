@@ -24,7 +24,7 @@
             "attachment_count": null,
             "scheduled_time": null,
             "location": null,
-            "underway_at": null,
+            "underway_at": "mock time",
             "optional": false,
             "rushb_id": null,
             "completed_at": null,
