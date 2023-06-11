@@ -9,7 +9,8 @@ func RouteSetup(fetchData mainlogic.FetchData) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(Middleware())
-	v1 := r.Group("/v1")
+	superGroup := r.Group("/api")
+	v1 := superGroup.Group("/v1")
 	{
 		v1.GET("/health", HealthCheck)
 		v1.GET("/matches", MatchesGET(fetchData))
