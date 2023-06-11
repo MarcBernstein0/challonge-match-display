@@ -36,6 +36,6 @@ export const Match = {
         const params = {
             date: dateStr
         }
-        return requests.get('/v1/matches', params)
+        return requests.get('/api/v1/matches', params)
     },
 };
