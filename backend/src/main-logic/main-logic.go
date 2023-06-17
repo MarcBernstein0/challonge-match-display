@@ -209,11 +209,11 @@ func (c *customClient) FetchParticipants(tournaments []models.Tournament) ([]mod
 	return tournamentParticipants, nil
 }
 
-func (c *customClient) fetchAllMatches(tournamentParticiapnt models.TournamentParticipants, matchResultChan chan<- matchResult, wg *sync.WaitGroup) {
+func (c *customClient) fetchAllMatches(tournamentParticipant models.TournamentParticipants, matchResultChan chan<- matchResult, wg *sync.WaitGroup) {
 	defer wg.Done()
-	tournamentID := tournamentParticiapnt.TournamentID
-	gameName := tournamentParticiapnt.GameName
-	participants := tournamentParticiapnt.Participant
+	tournamentID := tournamentParticipant.TournamentID
+	gameName := tournamentParticipant.GameName
+	participants := tournamentParticipant.Participant
 
 	// fmt.Println(tournamentID, gameName, participants)
 
@@ -293,9 +293,9 @@ func (c *customClient) FetchMatches(tournamentParticipants []models.TournamentPa
 
 	cResponse := make(chan matchResult)
 	var wg sync.WaitGroup
-	for _, tournamentParticiapnt := range tournamentParticipants {
+	for _, tournamentParticipant := range tournamentParticipants {
 		wg.Add(1) // add one to the waitgroup
-		go c.fetchAllMatches(tournamentParticiapnt, cResponse, &wg)
+		go c.fetchAllMatches(tournamentParticipant, cResponse, &wg)
 	}
 
 	go func() {

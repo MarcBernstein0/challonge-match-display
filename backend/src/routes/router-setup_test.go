@@ -213,7 +213,7 @@ func TestHealthCheckRoute(t *testing.T) {
 	router := RouteSetup(mockFetch)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/v1/health", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/api/v1/health", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -333,7 +333,7 @@ func TestGetMatchesRoute(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			// t.Parallel()
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest(http.MethodGet, "/v1/matches", nil)
+			req, _ := http.NewRequest(http.MethodGet, "/api/v1/matches", nil)
 			q := req.URL.Query()
 			q.Add("date", testCase.date)
 			req.URL.RawQuery = q.Encode()
