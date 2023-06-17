@@ -315,7 +315,7 @@ func (c *customClient) FetchMatches(tournamentParticipants []models.TournamentPa
 				match1 := math.Abs(float64(matchList[i].Round))
 				match2 := math.Abs(float64(matchList[j].Round))
 				if match1 == match2 {
-					return matchList[i].Round <= matchList[j].Round
+					return matchList[i].Player1Name <= matchList[j].Player1Name
 				}
 				return match1 < match2
 			})
