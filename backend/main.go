@@ -9,7 +9,7 @@ import (
 	"github.com/MarcBernstein0/challonge-match-display/backend/src/routes"
 )
 
-const BASE_URL = "https://api.challonge.com/v1"
+const BASE_URL = "https://api.challonge.com/v2"
 
 func main() {
 	port, present := os.LookupEnv("PORT")
