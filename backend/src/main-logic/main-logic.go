@@ -72,13 +72,16 @@ func (c *customClient) FetchTournaments(date string) ([]models.Tournament, error
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("Content-Type", "application/vnd.api+json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Authorization-Type", "v1")
+	req.Header.Set("Authorization", c.config.apiKey)
 	q := req.URL.Query()
-	q.Add("api_key", c.config.apiKey)
+	// q.Add("api_key", c.config.apiKey)
 	q.Add("state", "in_progress")
 	// fmt.Println(date)
 	q.Add("created_after", date)
 	req.URL.RawQuery = q.Encode()
-	// fmt.Printf("%v\n", req.URL)
 
 	res, err := c.client.Do(req)
 	if err != nil {
@@ -90,20 +93,25 @@ func (c *customClient) FetchTournaments(date string) ([]models.Tournament, error
 		return nil, fmt.Errorf("%w. %s", ErrResponseNotOK, http.StatusText(res.StatusCode))
 	}
 
-	var tournaments models.Tournaments
-	err = json.NewDecoder(res.Body).Decode(&tournaments)
+	var resData models.ResultData
+	err = json.NewDecoder(res.Body).Decode(&resData)
 	if err != nil {
 		return nil, fmt.Errorf("%w. %s", ErrServerProblem, http.StatusText(http.StatusInternalServerError))
 	}
-	// fmt.Printf("%+v, %v\n", tournaments, len(tournaments))
 
-	if len(tournaments) == 0 {
+	if len(resData.Data) == 0 {
 		return []models.Tournament{}, nil
 	}
 	var tournamentList []models.Tournament
-	for _, t := range tournaments {
-		tournamentList = append(tournamentList, t.Tournament)
+	for _, t := range resData.Data {
+		tournament := models.Tournament{
+			ID:       t.ID,
+			Name:     t.Attributes.Name,
+			GameName: t.Attributes.GameName,
+		}
+		tournamentList = append(tournamentList, tournament)
 	}
+	fmt.Printf("%+v\n", tournamentList)
 	return tournamentList, err
 }
 

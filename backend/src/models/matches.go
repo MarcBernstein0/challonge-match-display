@@ -22,7 +22,7 @@ type (
 	}
 	TournamentMatches struct {
 		GameName     string        `json:"game_name"`
-		TournamentID int           `json:"tournament_id"`
+		TournamentID string        `json:"tournament_id"`
 		MatchList    []CustomMatch `json:"match_list"`
 	}
 )
