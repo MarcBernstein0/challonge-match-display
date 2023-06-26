@@ -30,6 +30,7 @@ yarn-error.log*
 
 # dependencies
 /backend/.vscode
+/backend/tmp
 
 # production/build
 /backend/build
