@@ -9,7 +9,9 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/cache"
 	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/main-logic"
 	"github.com/MarcBernstein0/challonge-match-display/backend/src/models"
 	"github.com/stretchr/testify/assert"
@@ -210,7 +212,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestHealthCheckRoute(t *testing.T) {
-	router := RouteSetup(mockFetch)
+	mockCache := cache.NewCache(time.Second)
+	router := RouteSetup(mockFetch, mockCache)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/api/v1/health", nil)
@@ -221,6 +224,7 @@ func TestHealthCheckRoute(t *testing.T) {
 }
 
 func TestGetMatchesRoute(t *testing.T) {
+	mockCache := cache.NewCache(time.Second)
 	tt := []struct {
 		name       string
 		date       string
@@ -327,7 +331,7 @@ func TestGetMatchesRoute(t *testing.T) {
 		},
 	}
 
-	router := RouteSetup(mockFetch)
+	router := RouteSetup(mockFetch, mockCache)
 
 	for _, testCase := range tt {
 		t.Run(testCase.name, func(t *testing.T) {
