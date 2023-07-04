@@ -42,7 +42,7 @@ function App() {
           setIsLoaded(true);
           console.error("error occurred on website update:", err)
         });
-    }, 90000);
+    }, 30000);
     return () => clearInterval(interval);
 
 

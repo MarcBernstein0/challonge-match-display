@@ -212,7 +212,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestHealthCheckRoute(t *testing.T) {
-	mockCache := cache.NewCache(time.Second)
+	mockCache := cache.NewCache(time.Second, time.Second)
 	router := RouteSetup(mockFetch, mockCache)
 
 	w := httptest.NewRecorder()
@@ -224,7 +224,7 @@ func TestHealthCheckRoute(t *testing.T) {
 }
 
 func TestGetMatchesRoute(t *testing.T) {
-	mockCache := cache.NewCache(time.Second)
+	mockCache := cache.NewCache(time.Second, time.Second)
 	tt := []struct {
 		name       string
 		date       string

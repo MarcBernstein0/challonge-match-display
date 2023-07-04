@@ -270,7 +270,6 @@ func (c *customClient) fetchAllMatches(tournamentParticipant models.TournamentPa
 			Round:       m.Match.Round,
 			Underway:    len(m.Match.UnderwayAt) != 0,
 		}
-		fmt.Println("customMatch:", customMatch)
 		tournamentMatches.MatchList = append(tournamentMatches.MatchList, customMatch)
 	}
 	// fmt.Printf("%+v\n", tournamentMatches)

@@ -23,6 +23,9 @@ type Date struct {
 
 func MatchesGET(fetchData mainlogic.FetchData, cache *cache.Cache) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		if cache.ShouldClearCacheData() {
+			cache.ClearCache()
+		}
 		var date Date
 		matches := make([]models.TournamentMatches, 0)
 		if err := c.BindQuery(&date); err != nil {
@@ -33,13 +36,14 @@ func MatchesGET(fetchData mainlogic.FetchData, cache *cache.Cache) gin.HandlerFu
 			c.JSON(http.StatusBadRequest, errResponse)
 			return
 		}
+		formattedDateStr := date.Date.Format("2006-01-02")
 
 		var participants []models.TournamentParticipants
 		// check if cache is empty or time limit has been exceeded
-		if cache.IsCacheEmpty() || cache.ShouldUpdate() {
+		if cache.IsCacheEmptyDate(formattedDateStr) || cache.ShouldUpdate(formattedDateStr) {
 			// get date
 			// call tournaments
-			tournaments, err := fetchData.FetchTournaments(date.Date.Format("2006-01-02"))
+			tournaments, err := fetchData.FetchTournaments(formattedDateStr)
 			if err != nil {
 				errResponse := models.ErrorResponse{
 					Message:      "failed to get tournament data",
@@ -62,9 +66,9 @@ func MatchesGET(fetchData mainlogic.FetchData, cache *cache.Cache) gin.HandlerFu
 				c.JSON(http.StatusInternalServerError, errResponse)
 				return
 			}
-			cache.UpdateCache(participants)
+			cache.UpdateCache(participants, formattedDateStr)
 		} else {
-			participants = cache.GetData()
+			participants = cache.GetData(formattedDateStr)
 		}
 
 		// call matches
