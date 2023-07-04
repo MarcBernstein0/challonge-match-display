@@ -1,7 +1,7 @@
 package routes
 
 import (
-	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/main-logic"
+	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/main-logic"
 	"github.com/gin-gonic/gin"
 )
 

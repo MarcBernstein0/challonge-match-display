@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/main-logic"
+	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/main-logic"
 	"github.com/MarcBernstein0/challonge-match-display/backend/src/models"
 	"github.com/gin-gonic/gin"
 )
@@ -49,7 +49,7 @@ func MatchesGET(fetchData mainlogic.FetchData) gin.HandlerFunc {
 			c.JSON(http.StatusOK, matches)
 			return
 		}
-		// call particiapnts
+		// call participants
 		participants, err := fetchData.FetchParticipants(tournaments)
 		// fmt.Printf("list of participants %+v\n", participants)
 		if err != nil {
