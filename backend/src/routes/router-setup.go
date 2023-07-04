@@ -14,7 +14,12 @@ func RouteSetup(fetchData mainlogic.FetchData, cache *cache.Cache) *gin.Engine {
 	v1 := superGroup.Group("/v1")
 	{
 		v1.GET("/health", HealthCheck)
-		v1.GET("/matches", MatchesGET(fetchData, cache))
+		v1.GET("/matches", MatchesGET(fetchData))
+	}
+
+	v2 := superGroup.Group("/v2")
+	{
+		v2.GET("/matches", MatchesGETV2(fetchData, cache))
 	}
 
 	return r
