@@ -64,7 +64,7 @@ function App() {
                   </h1>
                 </Grid>
                 : matchResult.map((game) => (
-                  <Grid item xs={
+                  <Grid item sm={
                     matchResult.length <= 2 ? (12 / matchResult.length) : 4
                   }>
                     <CustomizedTables matchData={game} />
