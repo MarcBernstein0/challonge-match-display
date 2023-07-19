@@ -1,11 +1,12 @@
 package routes
 
 import (
-	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/main-logic"
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/cache"
+	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/main-logic"
 	"github.com/gin-gonic/gin"
 )
 
-func RouteSetup(fetchData mainlogic.FetchData) *gin.Engine {
+func RouteSetup(fetchData mainlogic.FetchData, cache *cache.Cache) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(Middleware())
@@ -14,6 +15,11 @@ func RouteSetup(fetchData mainlogic.FetchData) *gin.Engine {
 	{
 		v1.GET("/health", HealthCheck)
 		v1.GET("/matches", MatchesGET(fetchData))
+	}
+
+	v2 := superGroup.Group("/v2")
+	{
+		v2.GET("/matches", MatchesGETV2(fetchData, cache))
 	}
 
 	return r

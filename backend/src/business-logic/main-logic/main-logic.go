@@ -61,13 +61,7 @@ func New(baseURL, apiKey string, client *http.Client) *customClient {
 }
 
 func (c *customClient) FetchTournaments(date string) ([]models.Tournament, error) {
-	// ctx, cancel := context.WithTimeout(ctx, c.timeout)
-	// defer cancel()
-
-	// req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL, nil)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// check if cache is empty or needs to be updated
 	req, err := http.NewRequest(http.MethodGet, c.baseURL+"/tournaments.json", nil)
 	if err != nil {
 		return nil, err
@@ -276,7 +270,6 @@ func (c *customClient) fetchAllMatches(tournamentParticipant models.TournamentPa
 			Round:       m.Match.Round,
 			Underway:    len(m.Match.UnderwayAt) != 0,
 		}
-		fmt.Println("customMatch:", customMatch)
 		tournamentMatches.MatchList = append(tournamentMatches.MatchList, customMatch)
 	}
 	// fmt.Printf("%+v\n", tournamentMatches)

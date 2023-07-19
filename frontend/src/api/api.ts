@@ -36,6 +36,13 @@ export const Match = {
         const params = {
             date: dateStr
         }
-        return requests.get('/api/v1/matches', params)
+        return requests.get('/api/v1/matches', params);
     },
+    getMatchesV2: (date: Moment): Promise<Matches[]> => {
+        const dateStr = date.format("YYYY-MM-DD");
+        const params = {
+            date: dateStr
+        }
+        return requests.get('/api/v2/matches', params);
+    }
 };

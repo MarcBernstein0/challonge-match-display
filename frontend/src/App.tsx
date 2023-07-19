@@ -19,7 +19,7 @@ function App() {
     const parsedDate = moment();
 
     console.log(process.env);
-    Match.getMatches(parsedDate)
+    Match.getMatchesV2(parsedDate)
       .then((data) => {
         console.log("data result came back");
         setIsLoaded(true);
@@ -32,7 +32,7 @@ function App() {
       });
 
     const interval = setInterval(() => {
-      Match.getMatches(parsedDate)
+      Match.getMatchesV2(parsedDate)
         .then((data) => {
           console.log("data result came back");
           setIsLoaded(true);
@@ -42,7 +42,7 @@ function App() {
           setIsLoaded(true);
           console.error("error occurred on website update:", err)
         });
-    }, 90000);
+    }, 30000);
     return () => clearInterval(interval);
 
 
@@ -64,7 +64,7 @@ function App() {
                   </h1>
                 </Grid>
                 : matchResult.map((game) => (
-                  <Grid item xs={
+                  <Grid item sm={
                     matchResult.length <= 2 ? (12 / matchResult.length) : 4
                   }>
                     <CustomizedTables matchData={game} />

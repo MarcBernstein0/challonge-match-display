@@ -4,8 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
-	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/main-logic"
+	"github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/cache"
+	mainlogic "github.com/MarcBernstein0/challonge-match-display/backend/src/business-logic/main-logic"
 	"github.com/MarcBernstein0/challonge-match-display/backend/src/routes"
 )
 
@@ -22,8 +25,27 @@ func main() {
 		log.Fatalf("api_key not provided in env")
 	}
 
+	cacheTimerString, present := os.LookupEnv("CACHE_TIMER")
+	if !present {
+		cacheTimerString = "3"
+	}
+	cacheTimer, err := strconv.Atoi(cacheTimerString)
+	if err != nil {
+		log.Fatalf("cacheTimer could not be read properly\n%s", err)
+	}
+
+	cacheLastClearTimerString, present := os.LookupEnv("CACHE_CLEAR_TIMER")
+	if !present {
+		cacheLastClearTimerString = "5"
+	}
+	cacheClearTimer, err := strconv.Atoi(cacheLastClearTimerString)
+	if err != nil {
+		log.Fatalf("cacheTimer could not be read properly\n%s", err)
+	}
+
+	cache := cache.NewCache(time.Duration(cacheTimer)*time.Minute, time.Duration(cacheClearTimer)*time.Hour)
 	customClient := mainlogic.New(BASE_URL, apiKey, http.DefaultClient)
-	r := routes.RouteSetup(customClient)
+	r := routes.RouteSetup(customClient, cache)
 
 	r.Run(":" + port)
 }
