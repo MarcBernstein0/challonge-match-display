@@ -23,7 +23,7 @@ export default function CustomizedTables({ matchData }: TableProps): JSX.Element
                 
             </thead>
             <tbody>
-                {matchDataList.slice(0, 16).map(match => (
+                {matchDataList.slice(0, 5).map(match => (
                     <tr style={{
                         fontWeight: 'bold',
                     }}>
