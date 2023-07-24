@@ -1,29 +1,23 @@
+.fixTableHead {
+    overflow-y: scroll;
+}
+
+.fixTableHead thead th {
+    position: sticky;
+    top: 0;
+}
+
 table {
-    width: 20%;
-    border-color: black;
-    border-style: solid;
-    border-radius: 10px;
-    border-spacing: 0px;
-    /* min-width: -moz-available; */        /*  WebKit-based browsers will ignore this. */
-    /* min-width: -webkit-fill-available; */ /* Mozilla-based browsers will ignore this. */
-    min-width: stretch;
+    border-collapse: collapse;
+    width: 100%;
 }
 
-table tbody tr td {
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-style: solid;
-    border-color: black;
-    text-align: center;
-}
-
-table tbody tr td:last-child {
-    border-right: 0px;
-    font-size: medium;
+th,
+td {
+    padding: 8px 15px;
+    border: 2px solid #529432;
 }
 
 th {
-    font-size: xx-large;
+    background: #ABDD93;
 }

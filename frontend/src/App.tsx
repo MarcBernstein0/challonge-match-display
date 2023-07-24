@@ -7,7 +7,8 @@ import moment from 'moment';
 import { AxiosError } from 'axios';
 import { BrowserView } from 'react-device-detect';
 import Footer from './components/footer';
-import ScrollingTable from './components/scrollingTable';
+import StickyHeadTable from './components/scrollingTable';
+import CustomizedTables from './components/table';
 
 
 
@@ -67,7 +68,8 @@ function App() {
                   <Grid item sm={
                     matchResult.length <= 2 ? (12 / matchResult.length) : 4
                   }>
-                    <ScrollingTable matchData={game} />
+                    <CustomizedTables matchData={game} />
+                    {/* <StickyHeadTable matchData={game} /> */}
                   </Grid>
                 ))}
               <Grid item xs={12}>
