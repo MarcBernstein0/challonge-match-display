@@ -9,13 +9,13 @@ export default function Footer(): ReactElement {
     <Box sx={{
       position: "fixed",
       bottom: 0,
-      width: "100%"
+      width: "100%",
     }}>
       <footer className="footer">
         <div className="footer-container">
           <div className="item1">
             <Typography color="white" variant="h5">
-              Pendending Matches
+              Pending Matches
             </Typography>
           </div>
 

@@ -52,56 +52,45 @@ function App() {
 
   return (
     <span>
-      <BrowserView>
-        {isLoaded ? (
-          <span>
-            <Grid container spacing={3}>
-              {matchResult.length === 0 ?
-                <Grid item xs={12}>
-                  <h1 style={{
-                    textAlign: "center"
-                  }}>
-                    No tournaments
-                  </h1>
-                </Grid>
-                : matchResult.map((game) => (
-                  <Grid item sm={
-                    matchResult.length <= 2 ? (12 / matchResult.length) : 4
-                  }>
-                    <CustomizedTables matchData={game} />
-                    {/* <StickyHeadTable matchData={game} /> */}
-                  </Grid>
-                ))}
+      {isLoaded ? (
+        <span>
+          <Grid container spacing={3}>
+            {matchResult.length === 0 ?
               <Grid item xs={12}>
                 <h1 style={{
                   textAlign: "center"
                 }}>
-                  IF YOU SEE YOUR MATCH DISPLAYED PLEASE GO AHEAD AND PLAY YOUR MATCH. <br />
-                  MAKE SURE TO REPORT RESULTS TO THE TOURNAMENT'S TO.
+                  No tournaments
                 </h1>
               </Grid>
+              : matchResult.map((game) => (
+                <Grid item sm={
+                  matchResult.length <= 2 ? (12 / matchResult.length) : 4
+                }>
+                  {/* <CustomizedTables matchData={game} /> */}
+                  <StickyHeadTable matchData={game} />
+                </Grid>
+              ))}
+            <Grid item xs={12}>
+              <h1 style={{
+                textAlign: "center"
+              }}>
+                IF YOU SEE YOUR MATCH DISPLAYED PLEASE GO AHEAD AND PLAY YOUR MATCH. <br />
+                MAKE SURE TO REPORT RESULTS TO THE TOURNAMENT'S TO.
+              </h1>
             </Grid>
-          </span>
-        )
-          :
-          <Grid display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-          >
-            <LoadingAnimation />
-          </Grid>}
-      </BrowserView>
-      {/* <MobileView>
-        <Box display="flex"
-             justifyContent="center"
-             alignItems="center"
-             marginTop="2%"
+          </Grid>
+        </span>
+      )
+        :
+        <Grid display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
         >
-          <CustomizedMenus games={matchResult} />
-        </Box>
-      </MobileView>  */}
-      <Footer />
+          <LoadingAnimation />
+        </Grid>}
+      {/* <Footer /> */}
     </span>
 
 
