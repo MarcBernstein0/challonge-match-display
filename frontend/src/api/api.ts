@@ -39,7 +39,9 @@ export const Match = {
         return requests.get('/api/v1/matches', params);
     },
     getMatchesV2: (date: Moment): Promise<Matches[]> => {
-        const dateStr = date.format("YYYY-MM-DD");
+        // const dateStr = date.format("YYYY-MM-DD");
+        const dateStr = "2023-07-22";
+
         const params = {
             date: dateStr
         }

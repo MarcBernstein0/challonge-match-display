@@ -16,18 +16,19 @@ export default function ArrayOfCustomizable( matchData: Matches): JSX.Element[] 
     currentVal += chunk;
   }
   console.log(sliceOfMatchData);
+  for(const sliceData of sliceOfMatchData) {
+    result.push(CustomizedTables(matchData.tournament_id, matchData.game_name, sliceData));
+  }
 
-  return [];
+  return result;
 }
 
-function CustomizedTables({ matchData }: TableProps): JSX.Element {
-  const matchDataList: Match[] = matchData.match_list;
-
+function CustomizedTables(tournamentId: number, gameName: string, matchList: Match[]): JSX.Element {
   return (
     <table>
       <thead>
         <tr>
-          <th key={matchData.tournament_id} colSpan={3}>{matchData.game_name}</th>
+          <th key={tournamentId} colSpan={3}>{gameName}</th>
         </tr>
       </thead>
       <thead>
@@ -39,7 +40,7 @@ function CustomizedTables({ matchData }: TableProps): JSX.Element {
 
       </thead>
       <tbody>
-        {matchDataList.slice(0, 16).map(match => (
+        {matchList.map(match => (
           <tr style={{
             fontWeight: 'bold',
           }}>
