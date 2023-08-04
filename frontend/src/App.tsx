@@ -5,10 +5,7 @@ import LoadingAnimation from './components/loading';
 import { Matches } from './models/matches.interface';
 import moment from 'moment';
 import { AxiosError } from 'axios';
-import { BrowserView } from 'react-device-detect';
-import Footer from './components/footer';
-import StickyHeadTable from './components/scrollingTable';
-import CustomizedTables from './components/table';
+import StickyHeadTable from './components/scrollingTableMUI';
 
 
 
@@ -67,8 +64,8 @@ function App() {
                 <Grid item sm={
                   matchResult.length <= 2 ? (12 / matchResult.length) : 4
                 }>
-                  {/* <CustomizedTables matchData={game} /> */}
                   <StickyHeadTable matchData={game} />
+                  {/* <StickyHeadTable /> */}
                 </Grid>
               ))}
             <Grid item xs={12}>

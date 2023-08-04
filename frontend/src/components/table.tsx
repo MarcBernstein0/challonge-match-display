@@ -1,5 +1,5 @@
 import { Match, Matches } from "../models/matches.interface";
-import '../css/table.css';
+import '../css/scrollingTable.css';
 
 interface TableProps {
     matchData: Matches;
